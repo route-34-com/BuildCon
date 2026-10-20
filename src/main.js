@@ -112,7 +112,13 @@ function revealImages() {
       .from(img, { scale: 1.35, duration: 1.6, ease: 'expo.out' }, 0.2)
     gsap.to(img, { yPercent: -8, ease: 'none', scrollTrigger: { trigger: w, scrub: true } })
   })
-  gsap.from('.checks li', { x: 30, autoAlpha: 0, stagger: 0.08, duration: 0.7, scrollTrigger: { trigger: '.checks', start: 'top 85%' } })
+  gsap.from('.stamp', { scale: 0, rotate: -120, duration: 1.1, ease: 'back.out(1.8)', scrollTrigger: { trigger: '.about__media', start: 'top 70%' } })
+  gsap.from('.about__text > .pill, .about__title, .note', { y: 30, autoAlpha: 0, stagger: 0.1, duration: 0.9, ease: 'power3.out', scrollTrigger: { trigger: '.about__text', start: 'top 80%' } })
+  const line = $('.timeline')
+  gsap.timeline({ scrollTrigger: { trigger: line, start: 'top 85%' } })
+    .fromTo(line, { '--p': 0 }, { '--p': 1, duration: 1.4, ease: 'power2.inOut' })
+    .from('.timeline li', { y: 16, autoAlpha: 0, stagger: 0.28, duration: 0.6, ease: 'power2.out' }, 0.1)
+  gsap.from('.promises div', { y: 20, autoAlpha: 0, stagger: 0.07, duration: 0.6, ease: 'power2.out', scrollTrigger: { trigger: '.promises', start: 'top 90%' } })
 }
 
 function services() {
