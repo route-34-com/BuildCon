@@ -34,7 +34,12 @@ As you scroll, a house is built in real time — from an empty plot to foundatio
 - Horizontal-scroll services section
 - Process timeline that fills as you scroll
 - Project grid filterable by **Coimbatore / Erode** with 3D hover tilt
+- **Why us** guarantees grid and a **Kongu Buildcon vs typical contractor** comparison table
+- **Packages** (Essential / Signature / Luxe) with per-sq.ft rates and contracted material brands
 - Live **construction cost estimator** (city, package, built-up area → ₹ estimate and timeline)
+- **Live tracking app** preview with animated progress ring, CCTV feed and milestone payments
+- **FAQ** accordion covering cost, timeline, approvals, payments, home loans and NRI builds
+- Floating **WhatsApp and call** buttons
 - Animated office map with route between Coimbatore and Erode
 - Testimonial slider, contact form with validation, WhatsApp link
 - Custom cursor and magnetic buttons on desktop

@@ -247,6 +247,51 @@ function contact() {
   })
 }
 
+function why() {
+  gsap.from('.perk', { y: 60, autoAlpha: 0, duration: 0.9, stagger: 0.07, ease: 'power3.out', scrollTrigger: { trigger: '.why__grid', start: 'top 82%' } })
+  gsap.from('.compare__row', { x: -30, autoAlpha: 0, duration: 0.7, stagger: 0.06, ease: 'power3.out', scrollTrigger: { trigger: '.compare', start: 'top 82%' } })
+}
+
+function packages() {
+  gsap.from('.pkg', { y: 90, autoAlpha: 0, duration: 1, stagger: 0.12, ease: 'power3.out', scrollTrigger: { trigger: '.pkgs', start: 'top 82%' } })
+}
+
+function track() {
+  const ring = $('.ring__fill'), txt = $('.ring__txt')
+  const pct = { v: 0 }
+  const tl = gsap.timeline({ scrollTrigger: { trigger: '.phone', start: 'top 80%' } })
+  tl.from('.phone', { y: 120, rotate: 6, autoAlpha: 0, duration: 1.2, ease: 'expo.out' })
+    .to(pct, {
+      v: 64, duration: 1.6, ease: 'power2.out',
+      onUpdate: () => {
+        ring.style.strokeDashoffset = 201 - (201 * pct.v) / 100
+        txt.textContent = Math.round(pct.v) + '%'
+      }
+    }, 0.5)
+    .from('.app__steps li', { x: 20, autoAlpha: 0, stagger: 0.08, duration: 0.5 }, 0.6)
+    .from('.app__pay', { y: 20, autoAlpha: 0, duration: 0.6 }, 1.1)
+  gsap.from('.track__list li', { y: 24, autoAlpha: 0, stagger: 0.07, duration: 0.7, scrollTrigger: { trigger: '.track__list', start: 'top 85%' } })
+  gsap.to('.phone', { y: -40, ease: 'none', scrollTrigger: { trigger: '.track', scrub: true } })
+}
+
+function faq() {
+  $$('.qa').forEach(d => {
+    d.addEventListener('toggle', () => {
+      if (d.open) gsap.from($('p', d), { y: -10, autoAlpha: 0, duration: 0.5, ease: 'power2.out' })
+      ScrollTrigger.refresh()
+    })
+  })
+  gsap.from('.qa', { y: 30, autoAlpha: 0, stagger: 0.06, duration: 0.7, scrollTrigger: { trigger: '.faq__list', start: 'top 85%' } })
+}
+
+function fab() {
+  ScrollTrigger.create({
+    trigger: '.marquee', start: 'top bottom',
+    onEnter: () => $('.fab').classList.add('is-on'),
+    onLeaveBack: () => $('.fab').classList.remove('is-on')
+  })
+}
+
 function footer() {
   gsap.from('.footer__big', { yPercent: 60, autoAlpha: 0, duration: 1.2, ease: 'expo.out', scrollTrigger: { trigger: '.footer', start: 'top 85%' } })
 }
@@ -296,11 +341,16 @@ counters()
 revealImages()
 services()
 process()
+why()
 projects()
+packages()
 estimator()
+track()
 map()
 voices()
+faq()
 contact()
+fab()
 footer()
 chrome()
 
