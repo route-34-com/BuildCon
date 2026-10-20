@@ -73,6 +73,8 @@ function makeMaterials() {
     bark: std('#5b4a3a', { roughness: 1 }),
     coconut: std('#6d7b2c', { roughness: 0.6 }),
     bulb: new THREE.MeshStandardMaterial({ color: '#fff2d6', emissive: '#ffcf8a', emissiveIntensity: 0 }),
+    cove: new THREE.MeshStandardMaterial({ color: '#fff2d6', emissive: '#ffd59a', emissiveIntensity: 0 }),
+    blob: new THREE.MeshBasicMaterial({ map: blobTexture(), transparent: true, depthWrite: false, opacity: 0.55, polygonOffset: true, polygonOffsetFactor: -1 }),
     hill: std('#7b8f86', { roughness: 1, flatShading: true })
   }
 }
@@ -438,6 +440,17 @@ function buildHouse(scene, M) {
   return S
 }
 
+function blobTexture() {
+  return canvasTex(128, 128, (ctx, w, h) => {
+    const g = ctx.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, w / 2)
+    g.addColorStop(0, 'rgba(0,0,0,0.85)')
+    g.addColorStop(0.55, 'rgba(0,0,0,0.35)')
+    g.addColorStop(1, 'rgba(0,0,0,0)')
+    ctx.fillStyle = g
+    ctx.fillRect(0, 0, w, h)
+  })
+}
+
 function canvasTex(w, h, draw, repeat = 1) {
   const c = document.createElement('canvas')
   c.width = w
@@ -566,6 +579,8 @@ function curtain(parent, mat, x0, x1, y0, y1, z) {
   const m = new THREE.Mesh(geo, mat)
   m.position.set((x0 + x1) / 2, y0 + h / 2, z)
   parent.add(m)
+  m.userData.base = Float32Array.from(geo.attributes.position.array)
+  return m
 }
 
 function buildInterior(scene, M) {
@@ -584,14 +599,14 @@ function buildInterior(scene, M) {
   b(M.ceiling, -5.75, -5.1, cy, cy + 0.08, -4.1, 0.7)
   b(M.ceiling, -5.75, -5.1, cy, cy + 0.08, 3.1, 4.1)
   b(M.ceiling, 5.1, 5.75, cy, cy + 0.08, -4.1, 4.1)
-  b(M.bulb, -5.1, 5.1, cy + 0.08, cy + 0.1, -4.1, -4.06)
-  b(M.bulb, -5.1, 5.1, cy + 0.08, cy + 0.1, 4.06, 4.1)
-  b(M.bulb, -5.1, -5.06, cy + 0.08, cy + 0.1, -4.1, 0.7)
-  b(M.bulb, -5.1, -5.06, cy + 0.08, cy + 0.1, 3.1, 4.1)
-  b(M.bulb, 5.06, 5.1, cy + 0.08, cy + 0.1, -4.1, 4.1)
+  b(M.cove, -5.1, 5.1, cy + 0.08, cy + 0.1, -4.1, -4.06)
+  b(M.cove, -5.1, 5.1, cy + 0.08, cy + 0.1, 4.06, 4.1)
+  b(M.cove, -5.1, -5.06, cy + 0.08, cy + 0.1, -4.1, 0.7)
+  b(M.cove, -5.1, -5.06, cy + 0.08, cy + 0.1, 3.1, 4.1)
+  b(M.cove, 5.06, 5.1, cy + 0.08, cy + 0.1, -4.1, 4.1)
   for (let x = -4.5; x <= 4.5; x += 1.5) {
     for (const z of [-4.42, 4.42]) {
-      const d = cyl(g, M.bulb, 0.06, 0.06, 0.01, x, cy - 0.01, z, 14)
+      const d = cyl(g, M.cove, 0.06, 0.06, 0.01, x, cy - 0.01, z, 14)
       d.castShadow = false
     }
   }
@@ -640,8 +655,10 @@ function buildInterior(scene, M) {
   lampBulb.position.set(-3.4, top + 1.88, -3.2)
   g.add(lampBulb)
 
-  curtain(g, M.curtain, -4.0, -3.2, top + 0.05, cy - 0.05, -4.55)
-  curtain(g, M.curtain, 0.2, 1.0, top + 0.05, cy - 0.05, -4.55)
+  const curtains = [
+    curtain(g, M.curtain, -4.0, -3.2, top + 0.05, cy - 0.05, -4.55),
+    curtain(g, M.curtain, 0.2, 1.0, top + 0.05, cy - 0.05, -4.55)
+  ]
   b(M.steel, -4.1, 1.1, cy - 0.06, cy - 0.03, -4.57, -4.53)
 
   const planter = (x, z, s) => {
@@ -718,7 +735,7 @@ function buildInterior(scene, M) {
     const z1 = z0 - i * going
     const y = top + rise * (i + 1)
     r(M.teak, -5.72, -4.6, y - 0.08, y, z1 - going - 0.03, z1, 0.015)
-    b(M.bulb, -5.75, -5.73, y - 0.26, y - 0.22, z1 - 0.22, z1 - 0.08)
+    b(M.cove, -5.75, -5.73, y - 0.26, y - 0.22, z1 - 0.22, z1 - 0.08)
   }
   const zEnd = z0 - steps * going
   const A = new THREE.Vector3(-5.16, top, z0), B = new THREE.Vector3(-5.16, S1 - 0.08, zEnd)
@@ -747,6 +764,55 @@ function buildInterior(scene, M) {
 
   b(M.teak, -0.8, 0.5, top + 1.1, top + 2.3, 4.6, 4.75)
 
+  const blob = (x, z, w, d) => {
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(w, d), M.blob)
+    m.rotation.x = -Math.PI / 2
+    m.position.set(x, top + 0.004, z)
+    g.add(m)
+  }
+  blob(-2.5, -3.95, 3.9, 1.9)
+  blob(-2.5, -2.25, 1.7, 1.7)
+  blob(0.15, -1.9, 1.5, 1.5)
+  blob(3.5, -2.0, 2.6, 1.9)
+  blob(3.8, 1.5, 2.8, 2.6)
+  blob(5.4, -2.2, 1.0, 4.8)
+  blob(2.8, -4.4, 3.6, 1.0)
+  ;[[-0.3, -4.35], [-1.1, 4.35], [5.3, 4.3]].forEach(([x, z]) => blob(x, z, 0.9, 0.9))
+
+  const fan = new THREE.Group()
+  fan.position.set(-2.4, G1, -0.9)
+  cyl(fan, M.steel, 0.02, 0.02, 0.42, 0, -0.42, 0, 8)
+  cyl(fan, M.steel, 0.15, 0.13, 0.12, 0, -0.54, 0, 20)
+  const blades = new THREE.Group()
+  blades.position.y = -0.5
+  for (let i = 0; i < 3; i++) {
+    const arm = new THREE.Group()
+    arm.rotation.y = (i / 3) * Math.PI * 2
+    const blade = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.012, 0.13), M.oak)
+    blade.position.x = 0.48
+    blade.rotation.x = 0.12
+    blade.castShadow = true
+    arm.add(blade)
+    blades.add(arm)
+  }
+  fan.add(blades)
+  g.add(fan)
+
+  const N = 260, dustPos = new Float32Array(N * 3), seeds = new Float32Array(N)
+  for (let i = 0; i < N; i++) {
+    dustPos[i * 3] = -4.4 + Math.random() * 5
+    dustPos[i * 3 + 1] = top + 0.3 + Math.random() * (cy - top - 0.5)
+    dustPos[i * 3 + 2] = -4.4 + Math.random() * 4
+    seeds[i] = Math.random() * 100
+  }
+  const dustGeo = new THREE.BufferGeometry()
+  dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPos, 3))
+  const dust = new THREE.Points(dustGeo, new THREE.PointsMaterial({ color: '#ffe6bf', size: 0.022, transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending }))
+  dust.userData.seeds = seeds
+  dust.userData.base = Float32Array.from(dustPos)
+  g.add(dust)
+
+  g.userData = { fan: blades, curtains, dust }
   g.visible = false
   return g
 }
@@ -1056,6 +1122,20 @@ export function initHouse(section) {
   lamps[2].position.set(2.4, G1 - 0.7, 1.8)
   lamps[3].position.set(-3, F1 - 0.6, 1)
   lamps.forEach(l => scene.add(l))
+  const spots = [
+    [new THREE.SpotLight('#ffd7a3', 0, 9, 0.95, 0.85, 1.3), [-2.5, G1 - 0.34, -2.7], [-2.5, P, -2.9]],
+    [new THREE.SpotLight('#ffd7a3', 0, 8, 0.9, 0.85, 1.3), [3.5, G1 - 0.34, -1.6], [3.5, P, -2.0]]
+  ].map(([l, pos, tgt]) => {
+    l.position.set(...pos)
+    l.target.position.set(...tgt)
+    l.castShadow = true
+    l.shadow.mapSize.set(mobile ? 512 : 1024, mobile ? 512 : 1024)
+    l.shadow.bias = -0.0008
+    l.shadow.normalBias = 0.02
+    l.visible = false
+    scene.add(l, l.target)
+    return l
+  })
 
   const env = buildEnvironment(scene, M)
   const S = buildHouse(scene, M)
@@ -1097,6 +1177,31 @@ export function initHouse(section) {
   resize()
   addEventListener('resize', resize)
 
+  const { fan, curtains, dust } = interior.userData
+  function animateInterior(t) {
+    fan.rotation.y = t * 0.006
+    curtains.forEach((c, k) => {
+      const pos = c.geometry.attributes.position, base = c.userData.base
+      for (let i = 0; i < pos.count; i++) {
+        const x = base[i * 3], y = base[i * 3 + 1]
+        const sway = (0.5 - y / 3) * 0.05 * Math.sin(t * 0.0013 + x * 3 + k)
+        pos.setZ(i, Math.sin(x * 18 + t * 0.0008) * 0.04 + sway)
+      }
+      pos.needsUpdate = true
+    })
+    if (dust.material.opacity > 0.01) {
+      const pos = dust.geometry.attributes.position, base = dust.userData.base, seeds = dust.userData.seeds
+      for (let i = 0; i < pos.count; i++) {
+        const sd = seeds[i]
+        pos.setXYZ(i,
+          base[i * 3] + Math.sin(t * 0.00023 + sd) * 0.25,
+          base[i * 3 + 1] + Math.sin(t * 0.00017 + sd * 1.7) * 0.18,
+          base[i * 3 + 2] + Math.cos(t * 0.0002 + sd) * 0.25)
+      }
+      pos.needsUpdate = true
+    }
+  }
+
   function render(t) {
     const k = 1 + (zoomOut - 1) * cam.w
     target.set(cam.tx, cam.ty, cam.tz)
@@ -1105,8 +1210,14 @@ export function initHouse(section) {
       cam.ty + (cam.y - cam.ty) * k,
       cam.tz + (cam.z - cam.tz) * k
     )
+    if (cam.w < 0.05) {
+      camera.position.x += Math.sin(t * 0.00071) * 0.018
+      camera.position.y += Math.sin(t * 0.0011) * 0.012
+      target.x += Math.sin(t * 0.0005) * 0.03
+    }
     camera.lookAt(target)
     palms.forEach((p, i) => { p.userData.crown.rotation.z = Math.sin(t * 0.0012 + i) * 0.04 })
+    if (interior.visible) animateInterior(t)
     renderer.render(scene, camera)
   }
 
@@ -1220,15 +1331,20 @@ export function initHouse(section) {
     tl.to(sun, { intensity: 0.35, duration: 0.9 }, 7.0)
     tl.to(sun.color, { r: 1, g: 0.62, b: 0.4, duration: 0.9 }, 7.0)
     tl.to(hemi, { intensity: 0.35, duration: 0.9 }, 7.0)
-    tl.to(lamps, { intensity: 14, duration: 0.6, stagger: 0.1 }, 7.3)
+    tl.to(lamps, { intensity: 7, duration: 0.6, stagger: 0.1 }, 7.3)
     tl.to(M.glass, { emissiveIntensity: 0.55, duration: 0.6 }, 7.3)
     tl.to(M.bulb, { emissiveIntensity: 3, duration: 0.6 }, 7.3)
     tl.to(M.globe, { emissiveIntensity: 1.6, duration: 0.6 }, 7.3)
     tl.to(scene, { environmentIntensity: 0.08, duration: 0.9 }, 7.0)
-    tl.to(scene, { environmentIntensity: 0.28, duration: 0.6 }, 9.2)
     tl.to(M.glass, { emissiveIntensity: 0.05, opacity: 0.18, duration: 0.5 }, 9.2)
-    tl.to(hemi, { intensity: 1.1, duration: 0.6 }, 9.2)
-    tl.to(lamps, { intensity: 9, duration: 0.6 }, 9.2)
+    tl.set(spots, { visible: true }, 9.0)
+    tl.to(M.cove, { emissiveIntensity: 2.6, duration: 0.15, ease: 'power4.in' }, 9.05)
+    tl.to(spots[0], { intensity: 26, duration: 0.18, ease: 'power3.in' }, 9.12)
+    tl.to(spots[1], { intensity: 20, duration: 0.18, ease: 'power3.in' }, 9.24)
+    tl.to(lamps.slice(0, 3), { intensity: 9, duration: 0.25, stagger: 0.06 }, 9.1)
+    tl.to(hemi, { intensity: 0.9, duration: 0.5 }, 9.15)
+    tl.to(scene, { environmentIntensity: 0.26, duration: 0.5 }, 9.15)
+    tl.to(interior.userData.dust.material, { opacity: 0.55, duration: 0.5 }, 9.3)
 
     panel(5, 7.1, 8.4)
     tl.to(S.door.rotation, { y: 1.75, duration: 0.6, ease: 'power2.inOut' }, 8.6)
