@@ -7,7 +7,9 @@
   <meta name="description" content="BuildCon designs and builds homes, commercial spaces and industrial facilities across Coimbatore and Erode since 2006." />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <script>
-    try { if (localStorage.getItem('kb-theme') === 'light') document.documentElement.dataset.theme = 'light' } catch (e) {}
+    var kbTheme = 'light'
+    try { kbTheme = localStorage.getItem('kb-theme') || 'light' } catch (e) {}
+    if (kbTheme === 'light') document.documentElement.dataset.theme = 'light'
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

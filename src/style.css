@@ -736,3 +736,14 @@ html.theme-anim, html.theme-anim *, html.theme-anim *::before { transition: back
   .iphone__screen { border-radius: 17px; gap: 4px; }
   .web { grid-template-columns: 64px 1fr; }
 }
+
+.house {
+  --ink: #0f0f0e; --ink-2: #171716; --ink-3: #22221f;
+  --paper: #efece6; --paper-2: #e4e0d8; --muted: #8f8b83;
+  --ink-rgb: 15 15 14; --ink2-rgb: 23 23 22; --paper-rgb: 239 236 230;
+  --line: rgb(239 236 230 / 0.12);
+  --soft: #a9a59d; --soft-hi: #cfcbc3;
+  --accent-text: #f5b301; --amber-ink: #b07f00;
+  color: var(--paper);
+}
+:root[data-theme="light"] .nav { background: rgb(var(--ink-rgb) / 0.82); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); box-shadow: 0 1px 0 var(--line); }
