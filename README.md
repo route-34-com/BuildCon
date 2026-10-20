@@ -47,6 +47,12 @@ As you scroll, a house is built in real time — from an empty plot to foundatio
 - Custom cursor and magnetic buttons on desktop
 - Fully responsive with a mobile menu, respects `prefers-reduced-motion`, WebGL fallback
 
+## Live Site
+
+**https://buildcon.route34solutions.com**
+
+Hosted on Vercel. Every push to `main` deploys to production automatically; pushes to other branches get their own preview URL.
+
 ## Installation
 
 ### Step 1: Clone the Repository
