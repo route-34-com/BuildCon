@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import { mergeVertices } from 'three/examples/jsm/utils/BufferGeometryUtils.js'
 import { gsap } from 'gsap'
 
 const P = 0.45
@@ -22,8 +23,9 @@ function block(parent, mat, x0, x1, y0, y1, z0, z1) {
 function makeMaterials() {
   const std = (color, o = {}) => new THREE.MeshStandardMaterial({ color, roughness: 0.85, ...o })
   return {
-    grass: std('#6f8a4e', { roughness: 1 }),
-    soil: std('#8a6b4e', { roughness: 1 }),
+    grass: std('#ffffff', { roughness: 1, map: speckleTexture('#5d7a3c', ['#4e6b31', '#6d8a47', '#56743a', '#7a9450'], 80) }),
+    lawn: std('#ffffff', { roughness: 1, map: speckleTexture('#628240', ['#4f6e33', '#719049', '#5a7a3b'], 5), transparent: true, opacity: 0 }),
+    soil: std('#ffffff', { roughness: 1, map: speckleTexture('#8a6a4b', ['#76593e', '#9b7a58', '#6c5038', '#a5876a'], 5) }),
     paving: std('#c9c1b2'),
     concrete: std('#a9a59d'),
     plinth: std('#7d786f'),
@@ -42,7 +44,7 @@ function makeMaterials() {
     fabric: std('#4b5059', { roughness: 0.95 }),
     cabinet: std('#2f3237', { roughness: 0.5 }),
     quartz: std('#f4f2ee', { roughness: 0.2 }),
-    leaf: std('#ffffff', { roughness: 0.9, flatShading: true, vertexColors: true }),
+    leaf: std('#ffffff', { roughness: 0.85, vertexColors: true }),
     palm: std('#ffffff', { roughness: 0.75, side: THREE.DoubleSide, vertexColors: true }),
     trunk: std('#ffffff', { roughness: 1, map: barkTexture() }),
     bark: std('#5b4a3a', { roughness: 1 }),
@@ -64,6 +66,12 @@ function buildEnvironment(scene, M) {
   plot.receiveShadow = true
   scene.add(plot)
 
+  const lawn = new THREE.Mesh(new THREE.PlaneGeometry(27, 26), M.lawn)
+  lawn.rotation.x = -Math.PI / 2
+  lawn.position.set(-1, 0.015, 2.5)
+  lawn.receiveShadow = true
+  scene.add(lawn)
+
   const road = block(scene, M.concrete, -60, 60, 0, 0.02, 16, 22)
   road.castShadow = false
 
@@ -81,7 +89,30 @@ function buildEnvironment(scene, M) {
     scene.add(makeTree(M, x, z, 7 + (i % 2) * 2, mulberry(40 + i)))
   })
 
-  return { plot }
+  return { plot, lawn }
+}
+
+function speckleTexture(base, tones, repeat) {
+  const c = document.createElement('canvas')
+  c.width = c.height = 256
+  const ctx = c.getContext('2d')
+  ctx.fillStyle = base
+  ctx.fillRect(0, 0, 256, 256)
+  const rng = mulberry(tones.length * 31)
+  for (let i = 0; i < 2600; i++) {
+    ctx.globalAlpha = 0.25 + rng() * 0.35
+    ctx.fillStyle = tones[Math.floor(rng() * tones.length)]
+    const r = 0.6 + rng() * 2.2
+    ctx.beginPath()
+    ctx.arc(rng() * 256, rng() * 256, r, 0, Math.PI * 2)
+    ctx.fill()
+  }
+  const tex = new THREE.CanvasTexture(c)
+  tex.wrapS = tex.wrapT = THREE.RepeatWrapping
+  tex.repeat.set(repeat, repeat)
+  tex.anisotropy = 8
+  tex.colorSpace = THREE.SRGBColorSpace
+  return tex
 }
 
 function barkTexture() {
@@ -215,13 +246,16 @@ function foliage(group, M, rng, n, spread, y0, y1, s0, s1, hue) {
   const v = new THREE.Vector3(), c = new THREE.Color()
   for (let i = 0; i < n; i++) {
     const size = s0 + rng() * (s1 - s0)
-    const geo = new THREE.IcosahedronGeometry(size, 1)
+    let geo = new THREE.IcosahedronGeometry(size, 2)
+    geo.deleteAttribute('normal')
+    geo.deleteAttribute('uv')
+    geo = mergeVertices(geo)
     const p = geo.attributes.position
     const col = []
-    const shade = new THREE.Color().setHSL(hue + (rng() - 0.5) * 0.04, 0.45 + rng() * 0.15, 0.26 + rng() * 0.1)
+    const shade = new THREE.Color().setHSL(hue + (rng() - 0.5) * 0.04, 0.5 + rng() * 0.15, 0.17 + rng() * 0.07)
     for (let k = 0; k < p.count; k++) {
       v.fromBufferAttribute(p, k)
-      const j = 1 + (hash(Math.round(v.x * 100), Math.round(v.y * 100), Math.round(v.z * 100)) - 0.5) * 0.35
+      const j = 1 + (hash(Math.round(v.x * 100), Math.round(v.y * 100), Math.round(v.z * 100)) - 0.5) * 0.28
       v.multiplyScalar(j)
       v.y *= 0.82
       p.setXYZ(k, v.x, v.y, v.z)
@@ -474,20 +508,47 @@ function buildCrane(scene, M) {
 }
 
 function buildBlueprint(scene) {
-  const grid = new THREE.GridHelper(26, 26, '#f5b301', '#ffffff')
-  grid.position.set(0, 0.03, 0)
+  const grid = new THREE.GridHelper(26, 52, '#ffffff', '#ffffff')
+  grid.position.set(-1, 0.02, 2.5)
   grid.material.transparent = true
-  grid.material.opacity = 0.55
+  grid.material.opacity = 0.1
+  grid.material.depthWrite = false
   scene.add(grid)
-  const pts = [
-    [-6, -5], [6, -5], [6, -5], [6, 5], [6, 5], [-6, 5], [-6, 5], [-6, -5],
-    [-2, -5], [-2, 5], [2, -5], [2, 5], [-6, 0], [6, 0]
-  ]
-  const geo = new THREE.BufferGeometry().setFromPoints(pts.map(([x, z]) => new THREE.Vector3(x, 0.05, z)))
-  const mat = new THREE.LineBasicMaterial({ color: '#f5b301', transparent: true, opacity: 1 })
-  const lines = new THREE.LineSegments(geo, mat)
-  scene.add(lines)
-  return [grid.material, mat]
+
+  const flat = color => new THREE.MeshBasicMaterial({
+    color, transparent: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2
+  })
+  const lime = flat('#f6f3ec'), setout = flat('#f5b301')
+  const pegMat = new THREE.MeshStandardMaterial({ color: '#9a6b3f', roughness: 0.9, transparent: true })
+  const g = new THREE.Group()
+  scene.add(g)
+  const line = (x0, z0, x1, z1, w, mat, y = 0.03) => {
+    const len = Math.hypot(x1 - x0, z1 - z0)
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(len, w), mat)
+    m.rotation.x = -Math.PI / 2
+    m.rotation.z = Math.atan2(-(z1 - z0), x1 - x0)
+    m.position.set((x0 + x1) / 2, y, (z0 + z1) / 2)
+    g.add(m)
+  }
+  const rect = (x0, z0, x1, z1, w, mat) => {
+    line(x0 - w / 2, z0, x1 + w / 2, z0, w, mat)
+    line(x0 - w / 2, z1, x1 + w / 2, z1, w, mat)
+    line(x0, z0, x0, z1, w, mat)
+    line(x1, z0, x1, z1, w, mat)
+  }
+  const peg = (x, z) => {
+    const m = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.5, 0.1), pegMat)
+    m.position.set(x, 0.25, z)
+    m.castShadow = true
+    g.add(m)
+  }
+
+  rect(-6.3, -5.3, 6.3, 5.3, 0.14, lime)
+  const gx = [-6, -2, 2, 6], gz = [-5, 0, 5]
+  gx.forEach(x => { line(x, -7.2, x, 7.2, 0.035, setout, 0.035); peg(x, -7.2); peg(x, 7.2) })
+  gz.forEach(z => { line(-8.2, z, 8.2, z, 0.035, setout, 0.035); peg(-8.2, z); peg(8.2, z) })
+  gx.forEach(x => gz.forEach(z => rect(x - 0.6, z - 0.6, x + 0.6, z + 0.6, 0.07, lime)))
+  return [grid.material, lime, setout, pegMat]
 }
 
 export function initHouse(section) {
@@ -601,6 +662,12 @@ export function initHouse(section) {
       if (b != null) tl.to(panels[i], { autoAlpha: 0, y: -50, duration: 0.35, ease: 'power2.in' }, b)
     }
     const scales = arr => arr.map(m => m.scale)
+    const grow = (meshes, vars, at) => {
+      meshes = [].concat(meshes)
+      meshes.forEach(m => (m.visible = false))
+      tl.set(meshes, { visible: true }, at)
+      tl.from(meshes.map(m => m.scale), vars, at)
+    }
     const hs = name => hotspots.find(h => h.el.dataset.hs === name).el
     const hsShow = (names, a, b) => names.forEach((n, i) => {
       tl.fromTo(hs(n), { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.2 }, a + i * 0.08)
@@ -611,9 +678,9 @@ export function initHouse(section) {
     tl.to(section.querySelector('.hero__scroll'), { autoAlpha: 0, duration: 0.3 }, 0.1)
 
     tl.to(cam, { x: 18, y: 15, z: 22, duration: 1.2, ease: 'sine.inOut' }, 0)
-    tl.to(cam, { x: -16, y: 11, z: 18, tx: 0, ty: 0.5, duration: 1.6, ease: 'sine.inOut' }, 1.2)
-    tl.to(cam, { x: -19, y: 9, z: -4, ty: 2, duration: 1.4, ease: 'sine.inOut' }, 2.8)
-    tl.to(cam, { x: 15, y: 8, z: 18, ty: 2.5, duration: 1.6, ease: 'sine.inOut' }, 4.2)
+    tl.to(cam, { x: -19, y: 13, z: 21, tx: 0, ty: 0.5, duration: 1.6, ease: 'sine.inOut' }, 1.2)
+    tl.to(cam, { x: -23, y: 11.5, z: -5, ty: 2, duration: 1.4, ease: 'sine.inOut' }, 2.8)
+    tl.to(cam, { x: 18, y: 9.5, z: 21, ty: 2.5, duration: 1.6, ease: 'sine.inOut' }, 4.2)
     tl.to(cam, { x: 19, y: 10, z: 22, ty: 3, duration: 1.2, ease: 'sine.inOut' }, 5.8)
     tl.to(cam, { x: 4, y: 3.2, z: 21, tx: 0.5, ty: 3, tz: 0, duration: 1.0, ease: 'sine.inOut' }, 7.0)
     tl.to(cam, { x: 1.25, y: 1.9, z: 10.5, tx: 1.25, ty: 1.8, tz: 0, w: 0, duration: 0.8, ease: 'sine.inOut' }, 8.0)
@@ -624,30 +691,30 @@ export function initHouse(section) {
 
     tl.to(blueprint, { opacity: 0, duration: 0.5 }, 1.9)
     panel(1, 0.9, 2.4)
-    tl.from(scales(S.footings), { x: 0.001, y: 0.001, z: 0.001, duration: 0.4, stagger: 0.03, ease: 'back.out(2)' }, 1.0)
-    tl.from(S.plinth.scale, { y: 0.001, duration: 0.5 }, 1.7)
+    grow(S.footings, { x: 0.001, y: 0.001, z: 0.001, duration: 0.4, stagger: 0.03, ease: 'back.out(2)' }, 1.0)
+    grow(S.plinth, { y: 0.001, duration: 0.5 }, 1.7)
 
     panel(2, 2.6, 4.0)
-    tl.from(scales(S.columns), { y: 0.001, duration: 0.4, stagger: 0.025 }, 2.6)
-    tl.from(scales(S.beams), { x: 0.001, z: 0.001, duration: 0.4, stagger: 0.04 }, 3.0)
-    tl.from(S.slab.scale, { x: 0.001, z: 0.001, duration: 0.5 }, 3.4)
-    tl.from(scales(S.ffColumns), { y: 0.001, duration: 0.4, stagger: 0.03 }, 3.8)
+    grow(S.columns, { y: 0.001, duration: 0.4, stagger: 0.025 }, 2.6)
+    grow(S.beams, { x: 0.001, z: 0.001, duration: 0.4, stagger: 0.04 }, 3.0)
+    grow(S.slab, { x: 0.001, z: 0.001, duration: 0.5 }, 3.4)
+    grow(S.ffColumns, { y: 0.001, duration: 0.4, stagger: 0.03 }, 3.8)
 
     panel(3, 4.2, 5.6)
-    tl.from(scales(S.walls), { y: 0.001, duration: 0.45, stagger: 0.015 }, 4.2)
-    tl.from(scales(S.glass), { y: 0.001, duration: 0.35, stagger: 0.04 }, 4.8)
-    tl.from(S.door.scale, { y: 0.001, duration: 0.3 }, 5.0)
-    tl.from(scales(S.ffWalls), { y: 0.001, duration: 0.45, stagger: 0.02 }, 5.0)
-    tl.from(scales(S.ffGlass), { y: 0.001, duration: 0.3, stagger: 0.05 }, 5.4)
+    grow(S.walls, { y: 0.001, duration: 0.45, stagger: 0.015 }, 4.2)
+    grow(S.glass, { y: 0.001, duration: 0.35, stagger: 0.04 }, 4.8)
+    grow(S.door, { y: 0.001, duration: 0.3 }, 5.0)
+    grow(S.ffWalls, { y: 0.001, duration: 0.45, stagger: 0.02 }, 5.0)
+    grow(S.ffGlass, { y: 0.001, duration: 0.3, stagger: 0.05 }, 5.4)
 
     panel(4, 5.8, 7.0)
     S.roof.forEach(r => (r.visible = false))
     tl.set(S.roof, { visible: true }, 5.8)
     S.roof.forEach((r, i) => tl.from(r.position, { y: r.position.y + 7, duration: 0.5, ease: 'power3.out' }, 5.8 + i * 0.1))
     tl.set(interior, { visible: true }, 5.9)
-    tl.to(env.plot.material.color, { r: M.grass.color.r, g: M.grass.color.g, b: M.grass.color.b, duration: 0.6 }, 6.2)
-    tl.from(scales(S.landscape), { x: 0.001, y: 0.001, z: 0.001, duration: 0.4, stagger: 0.03 }, 6.2)
-    tl.from(S.pool.scale, { x: 0.001, z: 0.001, duration: 0.5 }, 6.3)
+    tl.to(env.lawn.material, { opacity: 1, duration: 0.6 }, 6.2)
+    grow(S.landscape, { x: 0.001, y: 0.001, z: 0.001, duration: 0.4, stagger: 0.03 }, 6.2)
+    grow(S.pool, { x: 0.001, z: 0.001, duration: 0.5 }, 6.3)
     tl.to(crane.position, { y: -22, duration: 0.8, ease: 'power2.in' }, 6.3)
     tl.to(jib.rotation, { y: 2.6, duration: 5.4, ease: 'none' }, 0.8)
 
