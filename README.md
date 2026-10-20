@@ -28,7 +28,7 @@ As you scroll, a house is built in real time — from an empty plot to foundatio
 
 - **3D scroll story** — plot → foundation → RCC frame → walls & glazing → roof & landscaping → dusk → walk inside
 - Working tower crane, swaying coconut palms and Western Ghats backdrop
-- Interior hotspots (marble flooring, modular kitchen, floating staircase, lighting)
+- Furnished interior walkthrough: living room, kitchen, dining and a steel-spine staircase rising to the first floor
 - Animated preloader with blueprint drawing and counter
 - Count-up stats, image clip reveals, split-word headline animations
 - Horizontal-scroll services section

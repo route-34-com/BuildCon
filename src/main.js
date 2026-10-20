@@ -45,7 +45,7 @@ function intro() {
   tl.from('.hero__title .word', { yPercent: 115, rotate: 4, duration: 1.1, stagger: 0.09, ease: 'expo.out' }, '-=0.35')
   tl.from('.panel--hero .eyebrow, .panel--hero .hero__lede', { y: 20, autoAlpha: 0, duration: 0.8, stagger: 0.1 }, '-=0.8')
   tl.from('.nav', { y: -30, autoAlpha: 0, duration: 0.8 }, '-=0.9')
-  tl.from('.hero__scroll, .house__hud', { autoAlpha: 0, duration: 0.6 }, '-=0.5')
+  tl.from('.house__hud', { autoAlpha: 0, duration: 0.6 }, '-=0.5')
   tl.add(() => lenis.start())
 }
 
@@ -303,14 +303,8 @@ function footer() {
 }
 
 function chrome() {
-  gsap.to('.progress', { scaleX: 1, ease: 'none', scrollTrigger: { start: 0, end: 'max', scrub: true } })
   const nav = $('.nav')
-  let last = 0
-  lenis.on('scroll', ({ scroll }) => {
-    nav.classList.toggle('is-scrolled', scroll > 40)
-    nav.classList.toggle('is-hidden', scroll > last && scroll > 400 && !document.body.classList.contains('menu-open'))
-    last = scroll
-  })
+  lenis.on('scroll', ({ scroll }) => nav.classList.toggle('is-scrolled', scroll > 40))
 
   const burger = $('.burger')
   burger.addEventListener('click', () => (document.body.classList.contains('menu-open') ? closeMenu() : openMenu()))
