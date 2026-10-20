@@ -265,19 +265,6 @@ function chrome() {
   burger.addEventListener('click', () => (document.body.classList.contains('menu-open') ? closeMenu() : openMenu()))
 
   if (!fine || reduced) return
-  const dot = $('.cursor__dot'), ring = $('.cursor__ring')
-  const xd = gsap.quickTo(dot, 'x', { duration: 0.1 }), yd = gsap.quickTo(dot, 'y', { duration: 0.1 })
-  const xr = gsap.quickTo(ring, 'x', { duration: 0.45, ease: 'power3' }), yr = gsap.quickTo(ring, 'y', { duration: 0.45, ease: 'power3' })
-  addEventListener('mousemove', e => { xd(e.clientX); yd(e.clientY); xr(e.clientX); yr(e.clientY) })
-  document.body.classList.add('has-cursor')
-  $$('a, button, input, select, textarea').forEach(el => {
-    el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'))
-    el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'))
-  })
-  $$('.card').forEach(el => {
-    el.addEventListener('mouseenter', () => document.body.classList.add('cursor-view'))
-    el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-view'))
-  })
   $$('.magnetic').forEach(el => {
     el.addEventListener('mousemove', e => {
       const r = el.getBoundingClientRect()

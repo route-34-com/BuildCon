@@ -79,19 +79,6 @@ em { font-style: normal; color: var(--amber); }
 
 .progress { position: fixed; top: 0; left: 0; right: 0; height: 3px; background: var(--amber); transform: scaleX(0); transform-origin: left; z-index: 60; }
 
-.cursor { display: none; }
-.has-cursor .cursor { display: block; }
-.has-cursor, .has-cursor a, .has-cursor button { cursor: none; }
-.cursor__dot, .cursor__ring { position: fixed; top: 0; left: 0; pointer-events: none; z-index: 90; border-radius: 50%; }
-.cursor__dot { width: 6px; height: 6px; margin: -3px 0 0 -3px; background: var(--amber); }
-.cursor__ring {
-  width: 40px; height: 40px; margin: -20px 0 0 -20px; border: 1.5px solid rgba(245, 179, 1, 0.6);
-  display: grid; place-items: center; transition: width 0.35s var(--ease), height 0.35s var(--ease), margin 0.35s var(--ease), background 0.35s;
-}
-.cursor__ring span::after { content: 'View'; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink); opacity: 0; transition: opacity 0.3s; }
-.cursor-hover .cursor__ring { width: 64px; height: 64px; margin: -32px 0 0 -32px; background: rgba(245, 179, 1, 0.12); }
-.cursor-view .cursor__ring { width: 90px; height: 90px; margin: -45px 0 0 -45px; background: var(--amber); border-color: var(--amber); }
-.cursor-view .cursor__ring span::after { opacity: 1; }
 
 .nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 50;

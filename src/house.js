@@ -42,9 +42,11 @@ function makeMaterials() {
     fabric: std('#4b5059', { roughness: 0.95 }),
     cabinet: std('#2f3237', { roughness: 0.5 }),
     quartz: std('#f4f2ee', { roughness: 0.2 }),
-    leaf: std('#4f7a3a', { roughness: 0.9, flatShading: true }),
-    palm: std('#5d8a3c', { roughness: 0.9, side: THREE.DoubleSide }),
-    trunk: std('#7a6450', { roughness: 1 }),
+    leaf: std('#ffffff', { roughness: 0.9, flatShading: true, vertexColors: true }),
+    palm: std('#ffffff', { roughness: 0.75, side: THREE.DoubleSide, vertexColors: true }),
+    trunk: std('#ffffff', { roughness: 1, map: barkTexture() }),
+    bark: std('#5b4a3a', { roughness: 1 }),
+    coconut: std('#6d7b2c', { roughness: 0.6 }),
     bulb: new THREE.MeshStandardMaterial({ color: '#fff2d6', emissive: '#ffcf8a', emissiveIntensity: 0 }),
     hill: std('#7b8f86', { roughness: 1, flatShading: true }),
     neighbour: std('#d8d3ca')
@@ -80,34 +82,193 @@ function buildEnvironment(scene, M) {
     block(scene, M.neighbour, x - w / 2, x + w / 2, 0, h, z - d / 2, z + d / 2)
   })
 
-  const palms = [[-17, -11], [13, -12], [-18, 9], [17, 15], [-16, 16], [9, -14], [-5, -13], [24, -4]]
-  palms.forEach(([x, z], i) => scene.add(makePalm(M, x, z, 6 + (i % 3), i)))
+  const palms = [[-17, -11], [13, -12], [-18, 9], [-21, -17], [-16, 16], [9, -14], [-5, -13], [24, -4]]
+  palms.forEach(([x, z], i) => scene.add(makePalm(M, x, z, 6.5 + (i % 3) * 0.9, i)))
+  ;[[-27, -5], [23, -19], [-25, 25], [29, 22], [-8, -24]].forEach(([x, z], i) => {
+    scene.add(makeTree(M, x, z, 7 + (i % 2) * 2, mulberry(40 + i)))
+  })
 
   return { plot }
 }
 
+function barkTexture() {
+  const c = document.createElement('canvas')
+  c.width = 256
+  c.height = 32
+  const ctx = c.getContext('2d')
+  ctx.fillStyle = '#7d6b58'
+  ctx.fillRect(0, 0, 256, 32)
+  for (let x = 0; x < 256; x += 16) {
+    ctx.fillStyle = '#4f4134'
+    ctx.fillRect(x, 0, 3, 32)
+    ctx.fillStyle = '#93816c'
+    ctx.fillRect(x + 4, 0, 5, 32)
+  }
+  for (let i = 0; i < 500; i++) {
+    ctx.fillStyle = Math.random() > 0.5 ? 'rgba(40,30,20,0.18)' : 'rgba(170,155,135,0.18)'
+    ctx.fillRect(Math.random() * 256, Math.random() * 32, 2, 2)
+  }
+  const tex = new THREE.CanvasTexture(c)
+  tex.wrapS = tex.wrapT = THREE.RepeatWrapping
+  tex.colorSpace = THREE.SRGBColorSpace
+  return tex
+}
+
+function frondGeometry(len, lift, droop, rng, dry) {
+  const base = new THREE.Color(dry ? '#7a6238' : '#2f5a22')
+  const tip = new THREE.Color(dry ? '#a88d5c' : '#7aa544')
+  const pos = [], col = []
+  const N = 22
+  const rach = []
+  for (let i = 0; i <= N; i++) {
+    const t = i / N
+    rach.push(new THREE.Vector3(t * len, lift * len * t - droop * len * t * t, 0))
+  }
+  const push = (v, c) => { pos.push(v.x, v.y, v.z); col.push(c.r, c.g, c.b) }
+  const tmp = new THREE.Color()
+  for (let i = 1; i <= N; i++) {
+    const t = i / N
+    const a = rach[i], b = rach[i - 1].clone().lerp(a, 0.35)
+    const c0 = base.clone().lerp(tip, t * 0.6)
+    const w = 0.025 * (1 - t) + 0.008
+    push(rach[i - 1].clone().setZ(-w), c0); push(a.clone().setZ(-w * 0.8), c0); push(a.clone().setZ(w * 0.8), c0)
+    push(rach[i - 1].clone().setZ(-w), c0); push(a.clone().setZ(w * 0.8), c0); push(rach[i - 1].clone().setZ(w), c0)
+    if (t < 0.1) continue
+    const L = len * 0.3 * Math.sin(Math.PI * Math.min(t * 1.1, 0.98)) * (0.85 + rng() * 0.3)
+    for (const side of [-1, 1]) {
+      if (dry && rng() < 0.3) continue
+      const dir = new THREE.Vector3(0.45, -0.5 - rng() * 0.35 - (dry ? 0.6 : 0), side).normalize()
+      const end = a.clone().addScaledVector(dir, L)
+      tmp.copy(tip).lerp(base, 0.15 * rng())
+      push(b, c0); push(a, c0); push(end, tmp)
+    }
+  }
+  const geo = new THREE.BufferGeometry()
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3))
+  geo.setAttribute('color', new THREE.Float32BufferAttribute(col, 3))
+  geo.computeVertexNormals()
+  return geo
+}
+
 function makePalm(M, x, z, h, seed) {
+  const rng = mulberry(seed * 97 + 13)
   const g = new THREE.Group()
-  const lean = (seed % 2 ? 1 : -1) * 0.08
-  const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.2, h, 7), M.trunk)
-  trunk.position.y = h / 2
-  trunk.rotation.z = lean
+  const ang = seed * 2.3, bend = 0.1 + (seed % 3) * 0.06
+  const pts = []
+  for (let i = 0; i <= 6; i++) {
+    const t = i / 6
+    const sway = Math.sin(t * Math.PI) * 0.25
+    pts.push(new THREE.Vector3(Math.cos(ang) * (bend * h * t * t + sway * 0.4), h * t, Math.sin(ang) * (bend * h * t * t)))
+  }
+  const curve = new THREE.CatmullRomCurve3(pts)
+  const segs = 40, rad = 10
+  const geo = new THREE.TubeGeometry(curve, segs, 1, rad, false)
+  const p = geo.attributes.position, v = new THREE.Vector3()
+  for (let i = 0; i <= segs; i++) {
+    const t = i / segs, c = curve.getPointAt(t)
+    const r = 0.2 * (1 - t * 0.4) + Math.max(0, 0.08 - t) * 2.2
+    for (let j = 0; j <= rad; j++) {
+      const k = i * (rad + 1) + j
+      v.fromBufferAttribute(p, k).sub(c).multiplyScalar(r).add(c)
+      p.setXYZ(k, v.x, v.y, v.z)
+    }
+  }
+  geo.computeVertexNormals()
+  const trunk = new THREE.Mesh(geo, M.trunk)
+  trunk.material.map.repeat.set(h * 2.2, 1)
   trunk.castShadow = true
   g.add(trunk)
+
+  const top = curve.getPointAt(1)
   const crown = new THREE.Group()
-  crown.position.set(-Math.sin(lean) * h, h, 0)
-  for (let i = 0; i < 9; i++) {
-    const frond = new THREE.Mesh(new THREE.PlaneGeometry(0.7, 3.2), M.palm)
-    frond.geometry.translate(0, 1.6, 0)
-    frond.rotation.order = 'YXZ'
-    frond.rotation.y = (i / 9) * Math.PI * 2 + seed
-    frond.rotation.x = 1.0 + (i % 2) * 0.35
+  crown.position.copy(top)
+  const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.13, 0.7, 10), M.bark)
+  shaft.position.y = -0.1
+  crown.add(shaft)
+  for (let i = 0; i < 6; i++) {
+    const a = (i / 6) * Math.PI * 2 + rng()
+    const nut = new THREE.Mesh(new THREE.SphereGeometry(0.15, 10, 8), M.coconut)
+    nut.scale.set(1, 1.15, 1)
+    nut.position.set(Math.cos(a) * 0.24, -0.35 - rng() * 0.15, Math.sin(a) * 0.24)
+    nut.castShadow = true
+    crown.add(nut)
+  }
+  const count = 16
+  for (let i = 0; i < count; i++) {
+    const ring = i % 3
+    const dry = i === 4 || i === 11
+    const lift = dry ? -0.6 : [0.95, 0.55, 0.2][ring]
+    const droop = dry ? 0.5 : [0.85, 1.0, 1.05][ring]
+    const frond = new THREE.Mesh(frondGeometry(3.3 + rng() * 0.8, lift, droop, rng, dry), M.palm)
+    frond.rotation.y = (i / count) * Math.PI * 2 + rng() * 0.3
+    frond.rotation.x = (rng() - 0.5) * 0.3
+    frond.position.y = 0.1 - ring * 0.08
     frond.castShadow = true
     crown.add(frond)
   }
   g.add(crown)
   g.position.set(x, 0, z)
+  g.rotation.y = rng() * Math.PI * 2
   g.userData.crown = crown
+  return g
+}
+
+function hash(x, y, z) {
+  const n = Math.sin(x * 12.9898 + y * 78.233 + z * 37.719) * 43758.5453
+  return n - Math.floor(n)
+}
+
+function foliage(group, M, rng, n, spread, y0, y1, s0, s1, hue) {
+  const v = new THREE.Vector3(), c = new THREE.Color()
+  for (let i = 0; i < n; i++) {
+    const size = s0 + rng() * (s1 - s0)
+    const geo = new THREE.IcosahedronGeometry(size, 1)
+    const p = geo.attributes.position
+    const col = []
+    const shade = new THREE.Color().setHSL(hue + (rng() - 0.5) * 0.04, 0.45 + rng() * 0.15, 0.26 + rng() * 0.1)
+    for (let k = 0; k < p.count; k++) {
+      v.fromBufferAttribute(p, k)
+      const j = 1 + (hash(Math.round(v.x * 100), Math.round(v.y * 100), Math.round(v.z * 100)) - 0.5) * 0.35
+      v.multiplyScalar(j)
+      v.y *= 0.82
+      p.setXYZ(k, v.x, v.y, v.z)
+      c.copy(shade).multiplyScalar(0.75 + 0.45 * ((v.y / size) * 0.5 + 0.5))
+      col.push(c.r, c.g, c.b)
+    }
+    geo.setAttribute('color', new THREE.Float32BufferAttribute(col, 3))
+    geo.computeVertexNormals()
+    const m = new THREE.Mesh(geo, M.leaf)
+    const a = rng() * Math.PI * 2, d = Math.sqrt(rng()) * spread
+    m.position.set(Math.cos(a) * d, y0 + rng() * (y1 - y0), Math.sin(a) * d)
+    m.castShadow = true
+    m.receiveShadow = true
+    group.add(m)
+  }
+}
+
+function makeBush(M, x, z, r, rng) {
+  const g = new THREE.Group()
+  foliage(g, M, rng, 6, r * 0.7, r * 0.45, r * 0.9, r * 0.45, r * 0.7, 0.27)
+  g.position.set(x, 0, z)
+  return g
+}
+
+function makeTree(M, x, z, h, rng) {
+  const g = new THREE.Group()
+  const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.32, h * 0.55, 9), M.bark)
+  trunk.position.y = h * 0.275
+  trunk.castShadow = true
+  g.add(trunk)
+  for (let i = 0; i < 4; i++) {
+    const br = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.13, h * 0.35, 6), M.bark)
+    br.geometry.translate(0, h * 0.175, 0)
+    br.position.y = h * 0.48
+    br.rotation.set(0.55 + rng() * 0.3, (i / 4) * Math.PI * 2 + rng(), 0, 'YXZ')
+    br.castShadow = true
+    g.add(br)
+  }
+  foliage(g, M, rng, 11, h * 0.32, h * 0.6, h * 0.85, h * 0.18, h * 0.26, 0.25)
+  g.position.set(x, 0, z)
   return g
 }
 
@@ -217,10 +378,7 @@ function buildHouse(scene, M) {
   L(M.wall, -14.5, 0, 0, 1.4, 15.2, 15.5)
   L(M.wall, 8, 12.5, 0, 1.4, 15.2, 15.5)
   ;[[-12.8, -8], [-12.6, 9], [10.5, -8], [10.8, 10], [-4, -8.5], [9, 3]].forEach(([x, z], i) => {
-    const r = 0.9 + (i % 3) * 0.35
-    const bush = new THREE.Mesh(new THREE.IcosahedronGeometry(r, 0), M.leaf)
-    bush.position.set(x, r * 0.8, z)
-    bush.castShadow = true
+    const bush = makeBush(M, x, z, 1.1 + (i % 3) * 0.4, mulberry(20 + i))
     scene.add(bush)
     S.landscape.push(bush)
   })
@@ -246,8 +404,8 @@ function buildInterior(scene, M) {
   const pot = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.22, 0.55, 12), M.cabinet)
   pot.position.set(-5.1, top + 0.27, 4.2)
   g.add(pot)
-  const plant = new THREE.Mesh(new THREE.IcosahedronGeometry(0.6, 0), M.leaf)
-  plant.position.set(-5.1, top + 1.05, 4.2)
+  const plant = makeBush(M, -5.1, 4.2, 0.75, mulberry(99))
+  plant.position.y = top + 0.35
   g.add(plant)
 
   b(M.cabinet, 5.1, 5.75, top, top + 0.88, -4.6, 0)
