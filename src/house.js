@@ -48,8 +48,7 @@ function makeMaterials() {
     bark: std('#5b4a3a', { roughness: 1 }),
     coconut: std('#6d7b2c', { roughness: 0.6 }),
     bulb: new THREE.MeshStandardMaterial({ color: '#fff2d6', emissive: '#ffcf8a', emissiveIntensity: 0 }),
-    hill: std('#7b8f86', { roughness: 1, flatShading: true }),
-    neighbour: std('#d8d3ca')
+    hill: std('#7b8f86', { roughness: 1, flatShading: true })
   }
 }
 
@@ -76,15 +75,9 @@ function buildEnvironment(scene, M) {
     scene.add(hill)
   }
 
-  const spots = [[-30, -22], [24, -20], [-34, 8], [30, 6], [-22, 34], [26, 34], [6, -30]]
-  spots.forEach(([x, z]) => {
-    const w = 8 + rng() * 6, h = 4 + rng() * 6, d = 8 + rng() * 5
-    block(scene, M.neighbour, x - w / 2, x + w / 2, 0, h, z - d / 2, z + d / 2)
-  })
-
   const palms = [[-17, -11], [13, -12], [-18, 9], [-21, -17], [-16, 16], [9, -14], [-5, -13], [24, -4]]
   palms.forEach(([x, z], i) => scene.add(makePalm(M, x, z, 6.5 + (i % 3) * 0.9, i)))
-  ;[[-27, -5], [23, -19], [-25, 25], [29, 22], [-8, -24]].forEach(([x, z], i) => {
+  ;[[-27, -5], [16, -20], [-25, 25], [29, 22], [-8, -24]].forEach(([x, z], i) => {
     scene.add(makeTree(M, x, z, 7 + (i % 2) * 2, mulberry(40 + i)))
   })
 
