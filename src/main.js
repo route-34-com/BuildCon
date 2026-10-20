@@ -277,22 +277,13 @@ function packages() {
 }
 
 function track() {
-  const ring = $('.ring__fill'), txt = $('.ring__txt')
-  const pct = { v: 0 }
   const tl = gsap.timeline({ scrollTrigger: { trigger: '.devices', start: 'top 80%' } })
-  tl.from('.laptop', { y: 80, autoAlpha: 0, duration: 1.1, ease: 'expo.out' })
-    .from('.devices .phone', { x: 60, y: 60, rotate: 8, autoAlpha: 0, duration: 1.1, ease: 'expo.out' }, 0.25)
-    .from('.ms em i', { width: 0, stagger: 0.12, duration: 0.8, ease: 'power2.out' }, 0.5)
-    .from('.dash__photos i', { scale: 0.6, autoAlpha: 0, stagger: 0.08, duration: 0.5, ease: 'back.out(2)' }, 0.6)
-    .from('.dash__kpis div', { y: 14, autoAlpha: 0, stagger: 0.08, duration: 0.5 }, 0.9)
-    .to(pct, {
-      v: 64, duration: 1.6, ease: 'power2.out',
-      onUpdate: () => {
-        ring.style.strokeDashoffset = 201 - (201 * pct.v) / 100
-        txt.textContent = Math.round(pct.v) + '%'
-      }
-    }, 0.7)
-    .from('.app__pay', { y: 20, autoAlpha: 0, duration: 0.6 }, 1.2)
+  tl.from('.mac', { y: 80, autoAlpha: 0, duration: 1.1, ease: 'expo.out' })
+    .from('.iphone', { x: 50, y: 40, rotate: 6, autoAlpha: 0, duration: 1.1, ease: 'expo.out' }, 0.3)
+    .from('.mcard', { x: -14, autoAlpha: 0, stagger: 0.08, duration: 0.5, ease: 'power2.out' }, 0.45)
+    .from('.mcard em i', { width: 0, stagger: 0.1, duration: 0.8, ease: 'power2.out' }, 0.6)
+    .from('.task, .web__photos', { y: 10, autoAlpha: 0, stagger: 0.07, duration: 0.45 }, 0.7)
+    .from('.ip__grid div, .ip__sched, .ip__pay', { y: 12, autoAlpha: 0, stagger: 0.07, duration: 0.45 }, 0.9)
   gsap.from('.track__text > *', { y: 30, autoAlpha: 0, stagger: 0.08, duration: 0.8, ease: 'power3.out', scrollTrigger: { trigger: '.track__text', start: 'top 82%' } })
   gsap.from('.tile', { y: 30, autoAlpha: 0, stagger: 0.07, duration: 0.6, ease: 'back.out(1.6)', scrollTrigger: { trigger: '.tiles', start: 'top 90%' } })
 }

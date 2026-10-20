@@ -22,7 +22,7 @@ As you scroll, a house is built in real time — from an empty plot to foundatio
 
    ⚡ **Vite** for instant dev server and optimised production builds
 
-> **Note:** "Kongu Buildcon" and all addresses, phone numbers, projects, testimonials and rates are **placeholder demo content**.
+> **Note:** "BuildCon" and all addresses, phone numbers, projects, testimonials and rates are **placeholder demo content**.
 
 ## Features
 
@@ -34,7 +34,7 @@ As you scroll, a house is built in real time — from an empty plot to foundatio
 - Horizontal-scroll services section
 - Process timeline that fills as you scroll
 - Project grid filterable by **Coimbatore / Erode** with 3D hover tilt
-- **Why us** guarantees grid and a three-column **Kongu Buildcon vs typical contractor** comparison table
+- **Why us** guarantees grid and a three-column **BuildCon vs typical contractor** comparison table
 - **Packages** (Essential / Signature / Luxe) with per-sq.ft rates and contracted material brands
 - Live **construction cost estimator** (city, package, built-up area → ₹ estimate and timeline)
 - **Live site tracking** section with an animated laptop dashboard and phone app preview

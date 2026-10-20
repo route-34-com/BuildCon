@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { mergeVertices } from 'three/examples/jsm/utils/BufferGeometryUtils.js'
+import { mergeVertices, mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js'
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js'
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
 import { gsap } from 'gsap'
@@ -41,6 +41,10 @@ function makeMaterials() {
     water: std('#2f9cc4', { roughness: 0.1, metalness: 0.2, emissive: '#0d4f6b', emissiveIntensity: 0.25 }),
     crane: std('#f5b301', { roughness: 0.5 }),
     cabin: std('#e8e4dc', { roughness: 0.6 }),
+    pit: new THREE.MeshStandardMaterial({ color: '#2e2117', roughness: 1 }),
+    soilHeap: std('#7a5a3e', { roughness: 1, flatShading: true }),
+    ply: std('#c99a5c', { roughness: 0.8 }),
+    scaffold: std('#7d868f', { roughness: 0.45, metalness: 0.6 }),
     rebar: std('#5a4636', { roughness: 0.7, metalness: 0.5 }),
     beacon: new THREE.MeshStandardMaterial({ color: '#ff3b30', emissive: '#ff3b30', emissiveIntensity: 1.5 }),
     steel: std('#3a3d42', { roughness: 0.4, metalness: 0.6 }),
@@ -831,6 +835,132 @@ function buildCrane(scene, M) {
   return { crane, jib: top, trolley }
 }
 
+function blockTexture() {
+  return canvasTex(256, 256, (ctx, w, h) => {
+    ctx.fillStyle = '#cfcac0'
+    ctx.fillRect(0, 0, w, h)
+    const rows = 8, bw = 64
+    ctx.strokeStyle = '#9d978c'
+    ctx.lineWidth = 3
+    for (let r = 0; r <= rows; r++) {
+      const y = (r * h) / rows
+      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke()
+      const off = r % 2 ? bw / 2 : 0
+      for (let x = off; x <= w; x += bw) {
+        ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x, y + h / rows); ctx.stroke()
+      }
+    }
+  }, 1)
+}
+
+function tubeGeo(a, b, r) {
+  const dir = new THREE.Vector3().subVectors(b, a)
+  const len = dir.length()
+  const g = new THREE.CylinderGeometry(r, r, len, 6)
+  const q = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir.clone().normalize())
+  g.applyMatrix4(new THREE.Matrix4().compose(a.clone().addScaledVector(dir, 0.5), q, new THREE.Vector3(1, 1, 1)))
+  return g
+}
+
+function boxGeo(x0, x1, y0, y1, z0, z1) {
+  const g = new THREE.BoxGeometry(x1 - x0, y1 - y0, z1 - z0)
+  g.translate((x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2)
+  return g
+}
+
+function merged(geos, mat) {
+  const m = new THREE.Mesh(mergeGeometries(geos), mat)
+  m.castShadow = true
+  m.receiveShadow = true
+  return m
+}
+
+function propsGrid(x0, x1, z0, z1, y0, y1) {
+  const V = THREE.Vector3, geos = []
+  for (let x = x0; x <= x1 + 0.01; x += 1.3) {
+    for (let z = z0; z <= z1 + 0.01; z += 1.3) {
+      geos.push(tubeGeo(new V(x, y0, z), new V(x, y1, z), 0.035))
+      geos.push(boxGeo(x - 0.2, x + 0.2, y1 - 0.06, y1, z - 0.06, z + 0.06))
+    }
+  }
+  return geos
+}
+
+function buildSite(scene, M) {
+  const V = THREE.Vector3
+  const site = { pits: [], mounds: [], rebar: [], ffRebar: [], forms: [], ffForms: [] }
+  const gx = [-6, -2, 2, 6], gz = [-5, 0, 5]
+  const cols = []
+  gx.forEach(x => gz.forEach(z => { if (!(Math.abs(x) === 2 && z === 0)) cols.push([x, z]) }))
+  const ff = []
+  ;[-7, -2.25, 2.5].forEach(x => [-4, 1, 6].forEach(z => ff.push([x, z])))
+
+  gx.forEach(x => gz.forEach(z => {
+    const pit = new THREE.Mesh(new THREE.PlaneGeometry(1.5, 1.5), M.pit)
+    pit.rotation.x = -Math.PI / 2
+    pit.position.set(x, 0.025, z)
+    scene.add(pit)
+    site.pits.push(pit)
+    const mound = new THREE.Mesh(new THREE.ConeGeometry(0.6, 0.5, 7), M.soilHeap)
+    mound.geometry.translate(0, 0.25, 0)
+    mound.position.set(x + (x > 0 ? 1.05 : -1.05), 0, z + 0.55)
+    mound.castShadow = true
+    scene.add(mound)
+    site.mounds.push(mound)
+  }))
+
+  const cage = (list, y0, y1, arr) => list.forEach(([x, z]) => {
+    const h = y1 - y0 + 0.5, geos = []
+    ;[[-0.11, -0.11], [0.11, -0.11], [-0.11, 0.11], [0.11, 0.11]].forEach(([dx, dz]) => geos.push(tubeGeo(new V(dx, 0, dz), new V(dx, h, dz), 0.016)))
+    for (let y = 0.25; y < h - 0.2; y += 0.3) {
+      geos.push(boxGeo(-0.12, 0.12, y, y + 0.012, -0.12, -0.108), boxGeo(-0.12, 0.12, y, y + 0.012, 0.108, 0.12))
+      geos.push(boxGeo(-0.12, -0.108, y, y + 0.012, -0.12, 0.12), boxGeo(0.108, 0.12, y, y + 0.012, -0.12, 0.12))
+    }
+    const m = merged(geos, M.rebar)
+    m.position.set(x, y0, z)
+    scene.add(m)
+    arr.push(m)
+  })
+  cage(cols, P, G1, site.rebar)
+  cage(ff, S1, F1, site.ffRebar)
+
+  const forms = (list, y0, y1, arr) => list.forEach(([x, z]) => arr.push(block(scene, M.ply, x - 0.25, x + 0.25, y0, y1, z - 0.25, z + 0.25)))
+  forms(cols, P, G1 - 0.4, site.forms)
+  forms(ff, S1, F1 - 0.05, site.ffForms)
+
+  site.props = merged(propsGrid(-5.6, 5.6, -4.6, 4.6, P, G1 - 0.06), M.scaffold)
+  site.deck = block(scene, M.ply, -6.4, 6.4, G1 - 0.06, G1 - 0.005, -5.4, 5.4)
+  site.roofProps = merged(propsGrid(-6.6, 2.2, -3.6, 5.6, S1, F1 - 0.06), M.scaffold)
+  site.roofDeck = block(scene, M.ply, -7.6, 3.2, F1 - 0.06, F1 - 0.005, -4.6, 6.8)
+  scene.add(site.props, site.roofProps)
+
+  const sx0 = -8, sx1 = 7.1, sz0 = -6.2, sz1 = 7.1, top = F1 + 1.1
+  const tubes = [], planks = []
+  const side = (ax, az, bx, bz) => {
+    const len = Math.hypot(bx - ax, bz - az), n = Math.max(1, Math.round(len / 1.8))
+    for (let i = 0; i <= n; i++) {
+      const x = ax + ((bx - ax) * i) / n, z = az + ((bz - az) * i) / n
+      tubes.push(tubeGeo(new V(x, 0, z), new V(x, top, z), 0.03))
+    }
+    for (let y = 1.6; y <= top; y += 1.8) {
+      tubes.push(tubeGeo(new V(ax, y, az), new V(bx, y, bz), 0.025))
+      if (y > 2) tubes.push(tubeGeo(new V(ax, y - 1.7, az), new V(bx, y, bz), 0.02))
+      const nx = bz - az, nz = -(bx - ax), nl = Math.hypot(nx, nz)
+      const ox = (nx / nl) * 0.35, oz = (nz / nl) * 0.35
+      planks.push(boxGeo(Math.min(ax, bx) + Math.min(0, ox) - 0.05, Math.max(ax, bx) + Math.max(0, ox) + 0.05, y - 0.04, y, Math.min(az, bz) + Math.min(0, oz) - 0.05, Math.max(az, bz) + Math.max(0, oz) + 0.05))
+    }
+  }
+  side(sx0, sz1, sx1, sz1)
+  side(sx1, sz1, sx1, sz0)
+  side(sx1, sz0, sx0, sz0)
+  side(sx0, sz0, sx0, sz1)
+  site.scaffold = new THREE.Group()
+  site.scaffold.add(merged(tubes, M.scaffold), merged(planks, M.ply))
+  scene.add(site.scaffold)
+
+  return site
+}
+
 function buildBlueprint(scene) {
   const grid = new THREE.GridHelper(26, 52, '#ffffff', '#ffffff')
   grid.position.set(-1, 0.02, 2.5)
@@ -931,6 +1061,24 @@ export function initHouse(section) {
   const S = buildHouse(scene, M)
   const interior = buildInterior(scene, M)
   const { crane, jib, trolley } = buildCrane(scene, M)
+  const site = buildSite(scene, M)
+  renderer.localClippingEnabled = true
+  const clip = {
+    gf: new THREE.Plane(new THREE.Vector3(0, -1, 0), P),
+    ff: new THREE.Plane(new THREE.Vector3(0, -1, 0), S1),
+    slab: new THREE.Plane(new THREE.Vector3(-1, 0, 0), -6.6),
+    roof: new THREE.Plane(new THREE.Vector3(-1, 0, 0), -7.8)
+  }
+  const clipped = (opts, plane) => new THREE.MeshStandardMaterial({ roughness: 0.95, ...opts, clippingPlanes: [plane], clipShadows: true })
+  const blocks = blockTexture()
+  M.blockGF = clipped({ map: blocks }, clip.gf)
+  M.blockFF = clipped({ map: blocks }, clip.ff)
+  M.pourSlab = clipped({ color: '#6f6b65' }, clip.slab)
+  M.pourRoof = clipped({ color: '#6f6b65' }, clip.roof)
+  S.walls.forEach(w => (w.material = M.blockGF))
+  S.ffWalls.forEach(w => (w.material = M.blockFF))
+  S.slab.forEach(w => (w.material = M.pourSlab))
+  S.roof[0].material = M.pourRoof
   const blueprint = buildBlueprint(scene)
   const palms = scene.children.filter(o => o.userData.crown)
 
@@ -997,28 +1145,67 @@ export function initHouse(section) {
     tl.to(cam, { z: 6.8, duration: 0.5, ease: 'sine.in' }, 8.8)
     tl.to(cam, { x: 1.2, y: 1.75, z: 3.0, tx: -2.2, ty: 1.2, tz: -3.5, duration: 0.8, ease: 'sine.inOut' }, 9.3)
 
-    tl.to(blueprint, { opacity: 0, duration: 0.5 }, 1.9)
+    const show = (objs, at) => { objs = [].concat(objs); objs.forEach(o => (o.visible = false)); tl.set(objs, { visible: true }, at) }
+    const hide = (objs, at) => tl.set([].concat(objs), { visible: false }, at)
+
     panel(1, 0.9, 2.4)
-    grow(S.footings, { x: 0.001, y: 0.001, z: 0.001, duration: 0.4, stagger: 0.03, ease: 'back.out(2)' }, 1.0)
-    grow(S.plinth, { y: 0.001, duration: 0.5 }, 1.7)
+    show(site.pits, 0.55)
+    tl.from(site.pits.map(p => p.scale), { x: 0.001, y: 0.001, stagger: 0.03, duration: 0.3, ease: 'power2.out' }, 0.55)
+    show(site.mounds, 0.6)
+    tl.from(site.mounds.map(m => m.scale), { x: 0.001, y: 0.001, z: 0.001, stagger: 0.03, duration: 0.35, ease: 'back.out(1.6)' }, 0.6)
+    tl.to(blueprint, { opacity: 0, duration: 0.4 }, 1.25)
+    tl.from(S.footings.map(f => f.position), { y: -0.34, stagger: 0.03, duration: 0.35, ease: 'power2.out' }, 1.05)
+    hide(site.pits, 1.5)
+    tl.to(site.mounds.map(m => m.scale), { x: 0.001, y: 0.001, z: 0.001, stagger: 0.02, duration: 0.3 }, 1.55)
+    tl.from(S.plinth.position, { y: -0.46, duration: 0.5, ease: 'power2.out' }, 1.75)
 
     panel(2, 2.6, 4.0)
-    grow(S.columns, { y: 0.001, duration: 0.4, stagger: 0.025 }, 2.6)
-    grow(S.beams, { x: 0.001, z: 0.001, duration: 0.4, stagger: 0.04 }, 3.0)
-    grow(S.slab, { x: 0.001, z: 0.001, duration: 0.5 }, 3.4)
-    grow(S.ffColumns, { y: 0.001, duration: 0.4, stagger: 0.03 }, 3.8)
+    show(site.rebar, 2.55)
+    tl.from(site.rebar.map(r => r.scale), { y: 0.001, stagger: 0.02, duration: 0.35, ease: 'power2.out' }, 2.55)
+    show(site.forms, 2.85)
+    tl.from(site.forms.map(f => f.scale), { y: 0.001, stagger: 0.02, duration: 0.25 }, 2.85)
+    show(S.columns, 3.05)
+    hide(site.forms, 3.25)
+    grow(S.beams, { x: 0.001, z: 0.001, duration: 0.3, stagger: 0.03 }, 3.2)
+    show([site.props, site.deck], 3.3)
+    tl.from(site.deck.scale, { x: 0.001, z: 0.001, duration: 0.25 }, 3.4)
+    show(S.slab, 3.6)
+    hide(site.rebar, 3.6)
+    tl.to(clip.slab, { constant: 6.6, duration: 0.45, ease: 'none' }, 3.6)
+    tl.to(M.pourSlab.color, { r: M.concrete.color.r, g: M.concrete.color.g, b: M.concrete.color.b, duration: 0.5 }, 4.0)
+    show(site.ffRebar, 3.75)
+    tl.from(site.ffRebar.map(r => r.scale), { y: 0.001, stagger: 0.02, duration: 0.3 }, 3.75)
+    show(site.ffForms, 3.9)
+    tl.from(site.ffForms.map(f => f.scale), { y: 0.001, stagger: 0.02, duration: 0.2 }, 3.9)
+    show(S.ffColumns, 4.05)
+    hide(site.ffForms, 4.15)
 
     panel(3, 4.2, 5.6)
-    grow(S.walls, { y: 0.001, duration: 0.45, stagger: 0.015 }, 4.2)
-    grow(S.glass, { y: 0.001, duration: 0.35, stagger: 0.04 }, 4.8)
-    grow(S.door, { y: 0.001, duration: 0.3 }, 5.0)
-    grow(S.ffWalls, { y: 0.001, duration: 0.45, stagger: 0.02 }, 5.0)
-    grow(S.ffGlass, { y: 0.001, duration: 0.3, stagger: 0.05 }, 5.4)
+    show(site.scaffold, 4.05)
+    tl.from(site.scaffold.scale, { y: 0.001, duration: 0.4, ease: 'steps(6)' }, 4.05)
+    show(S.walls, 4.2)
+    tl.to(clip.gf, { constant: G1, duration: 0.7, ease: 'steps(11)' }, 4.2)
+    hide([site.props, site.deck], 4.4)
+    tl.set(S.walls, { material: M.wall }, 4.95)
+    grow(S.glass, { y: 0.001, duration: 0.3, stagger: 0.04 }, 4.95)
+    grow(S.door, { y: 0.001, duration: 0.3 }, 5.05)
+    show(S.ffWalls, 4.95)
+    tl.to(clip.ff, { constant: F1, duration: 0.55, ease: 'steps(10)' }, 4.95)
+    tl.set(S.ffWalls, { material: M.clad }, 5.5)
+    grow(S.ffGlass, { y: 0.001, duration: 0.3, stagger: 0.05 }, 5.5)
 
     panel(4, 5.8, 7.0)
-    S.roof.forEach(r => (r.visible = false))
-    tl.set(S.roof, { visible: true }, 5.8)
-    S.roof.forEach((r, i) => tl.from(r.position, { y: r.position.y + 7, duration: 0.5, ease: 'power3.out' }, 5.8 + i * 0.1))
+    show([site.roofProps, site.roofDeck], 5.75)
+    tl.from(site.roofDeck.scale, { x: 0.001, z: 0.001, duration: 0.2 }, 5.8)
+    show(S.roof[0], 5.95)
+    hide(site.ffRebar, 5.95)
+    tl.to(clip.roof, { constant: 3.3, duration: 0.4, ease: 'none' }, 5.95)
+    tl.set(S.roof[0], { material: M.wall }, 6.4)
+    grow(S.roof.slice(1), { y: 0.001, duration: 0.3, stagger: 0.05 }, 6.35)
+    hide([site.roofProps, site.roofDeck], 6.45)
+    tl.to(site.scaffold.scale, { y: 0.001, duration: 0.35, ease: 'steps(6)' }, 6.5)
+    hide(site.scaffold, 6.86)
+
     tl.set(interior, { visible: true }, 5.9)
     tl.to(env.lawn.material, { opacity: 1, duration: 0.6 }, 6.2)
     grow(S.landscape, { x: 0.001, y: 0.001, z: 0.001, duration: 0.4, stagger: 0.03 }, 6.2)
