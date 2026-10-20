@@ -45,27 +45,20 @@ function intro() {
   tl.from('.hero__title .word', { yPercent: 115, rotate: 4, duration: 1.1, stagger: 0.09, ease: 'expo.out' }, '-=0.35')
   tl.from('.panel--hero .eyebrow, .panel--hero .hero__lede', { y: 20, autoAlpha: 0, duration: 0.8, stagger: 0.1 }, '-=0.8')
   tl.from('.nav', { y: -30, autoAlpha: 0, duration: 0.8 }, '-=0.9')
-  tl.from('.house__hud', { autoAlpha: 0, duration: 0.6 }, '-=0.5')
   tl.add(() => lenis.start())
 }
 
 function setupHouse() {
-  const labels = $$('.hud__labels span')
-  const marks = [0, 0.09, 0.22, 0.36, 0.49, 0.79]
   if (!house) return
   const tl = gsap.timeline({
     defaults: { ease: 'power2.inOut' },
     scrollTrigger: {
       trigger: houseSection,
       start: 'top top',
-      end: () => '+=' + innerHeight * (innerWidth < 760 ? 8 : 10),
+      end: () => '+=' + innerHeight * (innerWidth < 760 ? 7 : 8.8),
       pin: true,
       scrub: 1,
-      anticipatePin: 1,
-      onUpdate: s => {
-        gsap.set('.hud__bar i', { scaleX: s.progress })
-        labels.forEach((l, i) => l.classList.toggle('is-on', s.progress >= marks[i]))
-      }
+      anticipatePin: 1
     }
   })
   house.buildTimeline(tl)
@@ -292,7 +285,7 @@ function faq() {
 
 function fab() {
   ScrollTrigger.create({
-    trigger: '.marquee', start: 'top bottom',
+    trigger: '.stats', start: 'top bottom',
     onEnter: () => $('.fab').classList.add('is-on'),
     onLeaveBack: () => $('.fab').classList.remove('is-on')
   })

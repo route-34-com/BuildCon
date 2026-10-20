@@ -991,8 +991,6 @@ export function initHouse(section) {
     tl.to(cam, { x: 1.25, y: 1.9, z: 10.5, tx: 1.25, ty: 1.8, tz: 0, w: 0, duration: 0.8, ease: 'sine.inOut' }, 8.0)
     tl.to(cam, { z: 6.8, duration: 0.5, ease: 'sine.in' }, 8.8)
     tl.to(cam, { x: 1.2, y: 1.75, z: 3.0, tx: -2.2, ty: 1.2, tz: -3.5, duration: 0.8, ease: 'sine.inOut' }, 9.3)
-    tl.to(cam, { x: 0.4, y: 1.8, z: 2.4, tx: 4.2, ty: 1.2, tz: -2.6, duration: 0.8, ease: 'sine.inOut' }, 10.1)
-    tl.to(cam, { x: 1.2, y: 1.9, z: 0.6, tx: -5.2, ty: 2.0, tz: 2.4, duration: 0.8, ease: 'sine.inOut' }, 10.9)
 
     tl.to(blueprint, { opacity: 0, duration: 0.5 }, 1.9)
     panel(1, 0.9, 2.4)
@@ -1043,8 +1041,8 @@ export function initHouse(section) {
     panel(5, 7.1, 8.4)
     tl.to(S.door.rotation, { y: 1.75, duration: 0.6, ease: 'power2.inOut' }, 8.6)
 
-    panel(6, 9.5, 10.5)
-    tl.set({}, {}, 11.9)
+    panel(6, 9.5)
+    tl.set({}, {}, 10.5)
   }
 
   return { buildTimeline, render }
