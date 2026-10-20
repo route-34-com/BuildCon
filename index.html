@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kongu Buildcon — Builders in Coimbatore & Erode</title>
+  <meta name="description" content="Kongu Buildcon designs and builds homes, commercial spaces and industrial facilities across Coimbatore and Erode since 2006." />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800;900&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div class="loader" aria-hidden="true">
+    <div class="loader__grid"></div>
+    <svg class="loader__plan" viewBox="0 0 200 200">
+      <path d="M20 180 V60 L100 20 L180 60 V180 Z" />
+      <path d="M20 100 H180 M20 140 H180 M70 180 V100 M130 180 V100" />
+      <path d="M85 180 V150 H115 V180" />
+    </svg>
+    <div class="loader__count"><span>0</span>%</div>
+    <div class="loader__label">Laying the foundation</div>
+  </div>
+
+  <div class="cursor" aria-hidden="true"><div class="cursor__dot"></div><div class="cursor__ring"><span></span></div></div>
+  <div class="progress" aria-hidden="true"></div>
+
+  <header class="nav">
+    <a href="#top" class="brand" aria-label="Kongu Buildcon home">
+      <svg viewBox="0 0 40 40" class="brand__mark"><path d="M4 36 V16 L20 4 L36 16 V36" /><path d="M14 36 V24 H26 V36" /></svg>
+      <span>KONGU<b>BUILDCON</b></span>
+    </a>
+    <nav class="nav__links" aria-label="Primary">
+      <a href="#about">About</a>
+      <a href="#services">Services</a>
+      <a href="#projects">Projects</a>
+      <a href="#estimate">Estimate</a>
+      <a href="#locations">Offices</a>
+    </nav>
+    <a href="#contact" class="btn btn--small magnetic">Get a quote</a>
+    <button class="burger" aria-label="Open menu" aria-expanded="false"><span></span><span></span></button>
+  </header>
+
+  <div class="menu" aria-hidden="true">
+    <a href="#about">About</a>
+    <a href="#services">Services</a>
+    <a href="#projects">Projects</a>
+    <a href="#estimate">Estimate</a>
+    <a href="#locations">Offices</a>
+    <a href="#contact">Contact</a>
+    <p class="menu__foot">+91 98430 34034 · hello@kongubuildcon.in</p>
+  </div>
+
+  <main id="top">
+    <section class="house" aria-label="Scroll through the construction of a Kongu Buildcon home">
+      <canvas class="house__canvas"></canvas>
+      <div class="house__vignette"></div>
+
+      <div class="panel panel--hero" data-stage="0">
+        <p class="eyebrow"><span class="dot"></span> Coimbatore · Erode · Since 2006</p>
+        <h1 class="hero__title">
+          <span class="line"><span class="word">We build</span></span>
+          <span class="line"><span class="word">the <em>Kongu</em></span></span>
+          <span class="line"><span class="word">skyline.</span></span>
+        </h1>
+        <p class="hero__lede">Scroll to watch a home rise from an empty plot in Saravanampatti — then step inside.</p>
+      </div>
+
+      <div class="panel" data-stage="1">
+        <span class="panel__no">Stage 01 · Week 1–3</span>
+        <h2>Foundation</h2>
+        <p>Plate-load tested soil, isolated footings in M25 concrete and a 450 mm plinth with anti-termite treatment.</p>
+        <ul><li><b>2.4 m</b> footing depth</li><li><b>M25</b> RMC grade</li></ul>
+      </div>
+      <div class="panel panel--right" data-stage="2">
+        <span class="panel__no">Stage 02 · Week 4–12</span>
+        <h2>RCC frame</h2>
+        <p>Columns, beams and slabs cast with Fe550D TMT steel, designed for Seismic Zone III by our in-house structural team.</p>
+        <ul><li><b>Fe550D</b> TMT steel</li><li><b>28-day</b> cube tests</li></ul>
+      </div>
+      <div class="panel" data-stage="3">
+        <span class="panel__no">Stage 03 · Week 13–24</span>
+        <h2>Walls &amp; glazing</h2>
+        <p>Thermal AAC block walls keep rooms up to 4°C cooler. UPVC double-glazed windows cut Avinashi Road noise in half.</p>
+        <ul><li><b>−4°C</b> indoor temp</li><li><b>32 dB</b> noise reduction</li></ul>
+      </div>
+      <div class="panel panel--right" data-stage="4">
+        <span class="panel__no">Stage 04 · Week 25–36</span>
+        <h2>Roof, finishes &amp; landscape</h2>
+        <p>Cantilevered roof slabs, weatherproof coating, a 12 m plunge pool and native landscaping. The crane leaves; the family arrives.</p>
+        <ul><li><b>3,450</b> sq.ft built-up</li><li><b>36</b> weeks total</li></ul>
+      </div>
+      <div class="panel panel--center" data-stage="5">
+        <span class="panel__no">Handover</span>
+        <h2>Welcome home.</h2>
+        <p>Let's step inside.</p>
+      </div>
+      <div class="panel" data-stage="6">
+        <span class="panel__no">Inside · Ground floor</span>
+        <h2>Designed to be lived in</h2>
+        <p>Open-plan living, a chef's kitchen and a floating teak staircase — every finish selected with you in our Peelamedu experience centre.</p>
+      </div>
+
+      <div class="hotspots">
+        <div class="hs" data-hs="door"><i></i><span>Burma teak main door</span></div>
+        <div class="hs" data-hs="floor"><i></i><span>Italian marble · 2400×1200</span></div>
+        <div class="hs" data-hs="sofa"><i></i><span>Living lounge · 11 ft ceiling</span></div>
+        <div class="hs" data-hs="kitchen"><i></i><span>Modular kitchen · quartz top</span></div>
+        <div class="hs" data-hs="stairs"><i></i><span>Floating teak staircase</span></div>
+        <div class="hs" data-hs="light"><i></i><span>Warm 2700K LED scenes</span></div>
+      </div>
+
+      <div class="house__hud">
+        <div class="hud__bar"><i></i></div>
+        <div class="hud__labels"><span>Plot</span><span>Foundation</span><span>Frame</span><span>Walls</span><span>Roof</span><span>Inside</span></div>
+      </div>
+      <div class="hero__scroll"><span>Scroll to build</span><i></i></div>
+      <div class="house__fallback">Your browser doesn't support WebGL — scroll on to explore our work.</div>
+    </section>
+
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee__track">
+        <span>Residential Villas</span><i>✦</i><span>Commercial Complexes</span><i>✦</i><span>Industrial Sheds</span><i>✦</i><span>Turnkey Interiors</span><i>✦</i><span>Renovation</span><i>✦</i><span>DTCP &amp; LPA Approvals</span><i>✦</i>
+        <span>Residential Villas</span><i>✦</i><span>Commercial Complexes</span><i>✦</i><span>Industrial Sheds</span><i>✦</i><span>Turnkey Interiors</span><i>✦</i><span>Renovation</span><i>✦</i><span>DTCP &amp; LPA Approvals</span><i>✦</i>
+      </div>
+    </div>
+
+    <section class="stats">
+      <div class="stat"><b data-count="20">0</b><sup>+</sup><span>Years building in Kongu Nadu</span></div>
+      <div class="stat"><b data-count="460">0</b><sup>+</sup><span>Projects handed over</span></div>
+      <div class="stat"><b data-count="3.8" data-decimals="1">0</b><sup>M</sup><span>Sq.ft constructed</span></div>
+      <div class="stat"><b data-count="98">0</b><sup>%</sup><span>On-time handovers in 2025</span></div>
+    </section>
+
+    <section class="about" id="about">
+      <div class="about__media">
+        <div class="reveal-img"><img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=1200&q=75" alt="Engineer reviewing construction drawings" /></div>
+        <div class="reveal-img reveal-img--small"><img src="https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=900&q=75" alt="Site team inspecting a slab before pour" /></div>
+      </div>
+      <div class="about__text">
+        <p class="eyebrow">01 — Who we are</p>
+        <h2 class="split">A family-run builder with an engineer's obsession for detail.</h2>
+        <p class="fade-up">Founded in Peelamedu in 2006 by civil engineer R. Senthilkumar, Kongu Buildcon has grown from a four-person crew into a 380-member team with in-house design, structural, MEP and interiors divisions. Our Erode branch opened in 2014 to serve the textile and turmeric belt from Perundurai to Bhavani.</p>
+        <ul class="checks fade-up">
+          <li>Fixed-price contracts with a 42-point BOQ — no surprise invoices</li>
+          <li>Weekly drone progress reports on your phone</li>
+          <li>10-year structural warranty, 1-year free maintenance</li>
+          <li>Only ISI-marked steel, OPC 53 cement &amp; tested M-sand</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="services" id="services">
+      <div class="services__pin">
+        <div class="services__head">
+          <p class="eyebrow">02 — What we do</p>
+          <h2>Six disciplines.<br />One accountable team.</h2>
+        </div>
+        <div class="services__track">
+          <article class="svc">
+            <span class="svc__no">01</span>
+            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=900&q=70" alt="" />
+            <h3>Residential</h3>
+            <p>Independent villas, duplexes and gated communities. Vastu-aligned plans, rain-water harvesting standard.</p>
+            <small>From ₹1,950 / sq.ft</small>
+          </article>
+          <article class="svc">
+            <span class="svc__no">02</span>
+            <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=900&q=70" alt="" />
+            <h3>Commercial</h3>
+            <p>Showrooms, office blocks and hospitals with post-tensioned slabs and structural glazing.</p>
+            <small>G+2 to G+12</small>
+          </article>
+          <article class="svc">
+            <span class="svc__no">03</span>
+            <img src="https://images.unsplash.com/photo-1587293852726-70cdb56c2866?w=900&q=70" alt="" />
+            <h3>Industrial</h3>
+            <p>PEB sheds, warehouses and textile units at SIDCO, SIPCOT Perundurai and Kinathukadavu.</p>
+            <small>Up to 2 lakh sq.ft</small>
+          </article>
+          <article class="svc">
+            <span class="svc__no">04</span>
+            <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=900&q=70" alt="" />
+            <h3>Interiors</h3>
+            <p>Modular kitchens, wardrobes and full-home turnkey interiors from our own Kurichi factory.</p>
+            <small>45-day delivery</small>
+          </article>
+          <article class="svc">
+            <span class="svc__no">05</span>
+            <img src="https://images.unsplash.com/photo-1517581177682-a085bb7ffb15?w=900&q=70" alt="" />
+            <h3>Renovation</h3>
+            <p>Structural retrofits, floor additions and heritage restorations with zero-dust protocols.</p>
+            <small>Free site audit</small>
+          </article>
+          <article class="svc">
+            <span class="svc__no">06</span>
+            <img src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=900&q=70" alt="" />
+            <h3>Approvals</h3>
+            <p>DTCP, LPA, CMDA-equivalent and building-permit liaison with Coimbatore &amp; Erode corporations.</p>
+            <small>Avg. 38 days</small>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="process">
+      <div class="process__head">
+        <p class="eyebrow">03 — How it works</p>
+        <h2 class="split">From soil test to housewarming in five steps.</h2>
+      </div>
+      <div class="process__list">
+        <div class="process__line"><i></i></div>
+        <div class="step"><b>01</b><div><h3>Site visit &amp; soil test</h3><p>Free visit within 48 hours. SBC and plate-load testing to size the foundation correctly.</p></div><span>Week 1</span></div>
+        <div class="step"><b>02</b><div><h3>Design &amp; 3D walkthrough</h3><p>Architectural plan, structural design and photoreal 3D renders. Unlimited revisions until sign-off.</p></div><span>Week 2–4</span></div>
+        <div class="step"><b>03</b><div><h3>Fixed quote &amp; approvals</h3><p>Itemised BOQ, stage-wise payment schedule and all statutory approvals handled by us.</p></div><span>Week 5–9</span></div>
+        <div class="step"><b>04</b><div><h3>Build with live tracking</h3><p>Dedicated site engineer, 312 quality checkpoints and a live app with photos, payments and milestones.</p></div><span>6–14 months</span></div>
+        <div class="step"><b>05</b><div><h3>Handover &amp; warranty</h3><p>Snag-free handover, as-built drawings, and a 10-year structural warranty in your name.</p></div><span>Keys day</span></div>
+      </div>
+    </section>
+
+    <section class="projects" id="projects">
+      <div class="projects__head">
+        <div>
+          <p class="eyebrow">04 — Selected work</p>
+          <h2 class="split">Built across the Kongu belt.</h2>
+        </div>
+        <div class="filters" role="tablist">
+          <button class="is-active" data-filter="all">All</button>
+          <button data-filter="coimbatore">Coimbatore</button>
+          <button data-filter="erode">Erode</button>
+        </div>
+      </div>
+      <div class="grid">
+        <article class="card" data-city="coimbatore">
+          <div class="card__img"><img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1000&q=70" alt="White contemporary villa with pool" /></div>
+          <div class="card__meta"><span class="tag">Residential</span><span>2025</span></div>
+          <h3>Aaranya Villas</h3>
+          <p>Saravanampatti, Coimbatore · 14 villas · 46,000 sq.ft</p>
+        </article>
+        <article class="card card--tall" data-city="coimbatore">
+          <div class="card__img"><img src="https://images.unsplash.com/photo-1565008447742-97f6f38c985c?w=1000&q=70" alt="Glass tower under construction" /></div>
+          <div class="card__meta"><span class="tag">Commercial</span><span class="live">Under construction</span></div>
+          <h3>Avinashi One</h3>
+          <p>Avinashi Road, Peelamedu · G+11 office tower · 2.1 lakh sq.ft</p>
+        </article>
+        <article class="card" data-city="erode">
+          <div class="card__img"><img src="https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?w=1000&q=70" alt="Single-storey home with pool deck" /></div>
+          <div class="card__meta"><span class="tag">Residential</span><span>2024</span></div>
+          <h3>Thindal Courtyard House</h3>
+          <p>Thindal, Erode · Private residence · 5,400 sq.ft</p>
+        </article>
+        <article class="card" data-city="erode">
+          <div class="card__img"><img src="https://images.unsplash.com/photo-1587293852726-70cdb56c2866?w=1000&q=70" alt="Warehouse interior with racks" /></div>
+          <div class="card__meta"><span class="tag">Industrial</span><span>2023</span></div>
+          <h3>Bhavani Textiles Logistics Hub</h3>
+          <p>SIPCOT Perundurai, Erode · PEB warehouse · 1.6 lakh sq.ft</p>
+        </article>
+        <article class="card card--tall" data-city="coimbatore">
+          <div class="card__img"><img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1000&q=70" alt="Modern apartment block" /></div>
+          <div class="card__meta"><span class="tag">Residential</span><span>2024</span></div>
+          <h3>Kovai Heights</h3>
+          <p>Race Course, Coimbatore · 64 apartments · G+8</p>
+        </article>
+        <article class="card" data-city="erode">
+          <div class="card__img"><img src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1000&q=70" alt="Timber-clad contemporary home" /></div>
+          <div class="card__meta"><span class="tag">Residential</span><span class="live">Under construction</span></div>
+          <h3>Perundurai Road Residence</h3>
+          <p>Perundurai Road, Erode · Duplex villa · 3,900 sq.ft</p>
+        </article>
+        <article class="card" data-city="coimbatore">
+          <div class="card__img"><img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=1000&q=70" alt="Bright modern office interior" /></div>
+          <div class="card__meta"><span class="tag">Interiors</span><span>2025</span></div>
+          <h3>TidelPark Tech Office Fit-out</h3>
+          <p>Vilankurichi, Coimbatore · IT office interiors · 38,000 sq.ft</p>
+        </article>
+        <article class="card" data-city="erode">
+          <div class="card__img"><img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1000&q=70" alt="Dark modern house at dusk" /></div>
+          <div class="card__meta"><span class="tag">Residential</span><span>2022</span></div>
+          <h3>Bhavani Riverside Villa</h3>
+          <p>Bhavani, Erode · Riverside villa · 6,200 sq.ft</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="estimate" id="estimate">
+      <div class="estimate__text">
+        <p class="eyebrow">05 — Plan your budget</p>
+        <h2 class="split">What will my home cost?</h2>
+        <p class="fade-up">Indicative 2026 rates for a turnkey build including structure, finishes, electrical and plumbing. Final pricing follows a site visit and soil report.</p>
+      </div>
+      <form class="calc" onsubmit="return false">
+        <fieldset>
+          <legend>City</legend>
+          <div class="seg" data-name="city">
+            <button type="button" class="is-active" data-value="1">Coimbatore</button>
+            <button type="button" data-value="0.96">Erode</button>
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>Package</legend>
+          <div class="seg seg--3" data-name="pkg">
+            <button type="button" data-value="1950">Essential<small>₹1,950</small></button>
+            <button type="button" class="is-active" data-value="2350">Signature<small>₹2,350</small></button>
+            <button type="button" data-value="2900">Luxe<small>₹2,900</small></button>
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>Built-up area <output class="calc__area">2,000 sq.ft</output></legend>
+          <input type="range" min="800" max="8000" step="100" value="2000" class="calc__range" aria-label="Built-up area in square feet" />
+        </fieldset>
+        <div class="calc__out">
+          <span>Estimated cost</span>
+          <b class="calc__total">₹47.0 L</b>
+          <small class="calc__time">Approx. 9 months to handover</small>
+        </div>
+      </form>
+    </section>
+
+    <section class="locations" id="locations">
+      <div class="locations__head">
+        <p class="eyebrow">06 — Where we build</p>
+        <h2 class="split">Two cities. 100 km of trust.</h2>
+      </div>
+      <div class="locations__body">
+        <svg class="map" viewBox="0 0 600 420" aria-label="Map showing Coimbatore and Erode offices">
+          <defs>
+            <pattern id="dots" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" /></pattern>
+          </defs>
+          <path class="map__land" d="M40 60 C120 20 260 30 340 60 C430 40 540 80 570 160 C590 240 540 320 470 360 C380 410 260 400 180 380 C90 360 30 300 30 220 C25 160 20 100 40 60 Z" />
+          <path class="map__river" d="M120 80 C180 140 250 150 330 170 C380 185 420 230 470 260" />
+          <text x="380" y="215" class="map__rtxt">Bhavani · Kaveri</text>
+          <path class="map__route" d="M170 280 C240 250 320 200 430 150" />
+          <g class="pin" transform="translate(170 280)">
+            <circle r="26" class="pin__pulse" /><circle r="9" class="pin__core" />
+            <text x="-14" y="44">Coimbatore</text>
+          </g>
+          <g class="pin pin--b" transform="translate(430 150)">
+            <circle r="26" class="pin__pulse" /><circle r="9" class="pin__core" />
+            <text x="-12" y="-24">Erode</text>
+          </g>
+          <g class="map__km"><rect x="268" y="196" width="76" height="26" rx="13" /><text x="306" y="214">~100 km</text></g>
+          <g class="map__sites">
+            <circle cx="140" cy="250" r="4" /><circle cx="205" cy="300" r="4" /><circle cx="190" cy="250" r="4" /><circle cx="150" cy="305" r="4" /><circle cx="230" cy="270" r="4" />
+            <circle cx="410" cy="135" r="4" /><circle cx="455" cy="170" r="4" /><circle cx="395" cy="170" r="4" /><circle cx="360" cy="190" r="4" /><circle cx="470" cy="128" r="4" />
+          </g>
+        </svg>
+        <div class="offices">
+          <article class="office">
+            <h3>Coimbatore <small>Head Office</small></h3>
+            <p>No. 34, 2nd Floor, Lakshmi Towers,<br />Avinashi Road, Peelamedu,<br />Coimbatore — 641 004</p>
+            <dl>
+              <div><dt>Phone</dt><dd><a href="tel:+919843034034">+91 98430 34034</a></dd></div>
+              <div><dt>Hours</dt><dd>Mon–Sat · 9:30 am – 7:00 pm</dd></div>
+              <div><dt>Serving</dt><dd>RS Puram, Saravanampatti, Vadavalli, Singanallur, Kovaipudur, Pollachi, Mettupalayam</dd></div>
+            </dl>
+          </article>
+          <article class="office">
+            <h3>Erode <small>Branch Office</small></h3>
+            <p>No. 112, Perundurai Road,<br />Near Kongu Kalyana Mandapam, Thindal,<br />Erode — 638 009</p>
+            <dl>
+              <div><dt>Phone</dt><dd><a href="tel:+919843134134">+91 98431 34134</a></dd></div>
+              <div><dt>Hours</dt><dd>Mon–Sat · 9:30 am – 6:30 pm</dd></div>
+              <div><dt>Serving</dt><dd>Thindal, Surampatti, Bhavani, Perundurai, Gobichettipalayam, Chennimalai, Tiruppur</dd></div>
+            </dl>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="voices">
+      <p class="eyebrow">07 — Client voices</p>
+      <div class="voices__slider">
+        <blockquote class="voice is-active">
+          <p>“They gave us a fixed price in March and handed over the keys in December — same number, not a rupee more. The weekly drone videos meant my parents in Erode watched every floor go up.”</p>
+          <footer><b>Karthik &amp; Divya Raman</b><span>Villa owners · Vadavalli, Coimbatore</span></footer>
+        </blockquote>
+        <blockquote class="voice">
+          <p>“Our 1.6 lakh sq.ft warehouse at Perundurai was operational in 7 months. Their PEB team coordinated with SIPCOT approvals so we never lost a day.”</p>
+          <footer><b>S. Muthusamy</b><span>Director, Bhavani Textiles · Erode</span></footer>
+        </blockquote>
+        <blockquote class="voice">
+          <p>“As an NRI I was worried about building remotely. Kongu Buildcon's app showed me payments, photos and every quality check. Best decision we made.”</p>
+          <footer><b>Priya Venkatesh</b><span>Homeowner · Thindal, Erode (lives in Singapore)</span></footer>
+        </blockquote>
+      </div>
+      <div class="voices__nav">
+        <button class="voices__btn" data-dir="-1" aria-label="Previous testimonial">←</button>
+        <span class="voices__count"><b>01</b> / 03</span>
+        <button class="voices__btn" data-dir="1" aria-label="Next testimonial">→</button>
+      </div>
+    </section>
+
+    <section class="contact" id="contact">
+      <div class="contact__bg"><img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=2000&q=70" alt="" /></div>
+      <div class="contact__inner">
+        <div class="contact__text">
+          <p class="eyebrow">08 — Start building</p>
+          <h2 class="split">Let's talk about your plot.</h2>
+          <p class="fade-up">Tell us a little about your project. A senior engineer from our Coimbatore or Erode office will call you within one working day.</p>
+          <a href="https://wa.me/919843034034" class="wa fade-up" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.4-.7-2.8-1.1-4.6-4-4.8-4.2-.1-.2-1.1-1.5-1.1-2.9s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.9 2.1c.1.2.1.4 0 .6l-.3.5-.4.5c-.1.1-.3.3-.1.6.2.3.8 1.3 1.6 2.1 1.1 1 2 1.3 2.3 1.4.3.1.5.1.6-.1l.9-1.1c.2-.3.4-.2.7-.1l2 .9c.3.1.5.2.5.3.1.2.1.7-.1 1.3Z"/></svg>
+            Chat on WhatsApp
+          </a>
+        </div>
+        <form class="form" novalidate>
+          <div class="field"><input id="f-name" name="name" required placeholder=" " autocomplete="name" /><label for="f-name">Your name</label></div>
+          <div class="field"><input id="f-phone" name="phone" required placeholder=" " inputmode="tel" pattern="[0-9+ ]{10,}" autocomplete="tel" /><label for="f-phone">Phone number</label></div>
+          <div class="field field--select">
+            <select id="f-city" name="city" required>
+              <option value="" disabled selected></option>
+              <option>Coimbatore</option>
+              <option>Erode</option>
+              <option>Tiruppur / nearby</option>
+            </select>
+            <label for="f-city">Plot location</label>
+          </div>
+          <div class="field field--select">
+            <select id="f-type" name="type" required>
+              <option value="" disabled selected></option>
+              <option>New home</option>
+              <option>Commercial building</option>
+              <option>Industrial / warehouse</option>
+              <option>Interiors</option>
+              <option>Renovation</option>
+            </select>
+            <label for="f-type">Project type</label>
+          </div>
+          <div class="field field--full"><textarea id="f-msg" name="msg" rows="3" placeholder=" "></textarea><label for="f-msg">Plot size, budget, timeline… (optional)</label></div>
+          <button class="btn btn--block magnetic" type="submit">Request a call back</button>
+          <p class="form__note" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer__big">KONGU BUILDCON</div>
+    <div class="footer__cols">
+      <div><h4>Coimbatore</h4><p>Avinashi Road, Peelamedu — 641 004<br />+91 98430 34034</p></div>
+      <div><h4>Erode</h4><p>Perundurai Road, Thindal — 638 009<br />+91 98431 34134</p></div>
+      <div><h4>Write to us</h4><p><a href="mailto:hello@kongubuildcon.in">hello@kongubuildcon.in</a><br /><a href="mailto:careers@kongubuildcon.in">careers@kongubuildcon.in</a></p></div>
+      <div><h4>Credentials</h4><p>TN Class I Contractor · ISO 9001:2015<br />GSTIN 33AABCK0000X1Z5</p></div>
+    </div>
+    <div class="footer__base">
+      <span>© 2026 Kongu Buildcon Pvt. Ltd. — demo content, all details are placeholders.</span>
+      <a href="#top" class="totop">Back to top ↑</a>
+    </div>
+  </footer>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
