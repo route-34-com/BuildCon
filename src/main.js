@@ -3,6 +3,7 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Lenis from 'lenis'
 import { initHouse } from './house.js'
+import { initMap } from './map.js'
 
 gsap.registerPlugin(ScrollTrigger)
 if ('scrollRestoration' in history) history.scrollRestoration = 'manual'
@@ -195,16 +196,21 @@ function estimator() {
 }
 
 function map() {
-  const route = $('.map__route')
-  const len = route.getTotalLength()
-  gsap.set(route, { strokeDasharray: len, strokeDashoffset: len })
-  const tl = gsap.timeline({ scrollTrigger: { trigger: '.map', start: 'top 75%' } })
-  tl.from('.map__land', { autoAlpha: 0, scale: 0.94, transformOrigin: 'center', duration: 1, ease: 'power3.out' })
-    .from('.map__river', { strokeDashoffset: 600, strokeDasharray: 600, duration: 1.4, ease: 'power2.inOut' }, 0.2)
-    .from('.pin', { scale: 0, transformOrigin: 'center', stagger: 0.25, duration: 0.7, ease: 'back.out(3)' }, 0.5)
-    .to(route, { strokeDashoffset: 0, duration: 1.4, ease: 'power2.inOut' }, 0.9)
-    .from('.map__km', { autoAlpha: 0, y: 10, duration: 0.5 }, 1.9)
-    .from('.map__sites circle', { scale: 0, transformOrigin: 'center', stagger: 0.05, duration: 0.4, ease: 'back.out(3)' }, 1.6)
+  const offices = $$('.office')
+  const m = initMap($('.mapx'), {
+    card: $('.offices .mapx__card'),
+    onOffice: key => offices.forEach(o => {
+      const on = o.dataset.office === key
+      o.classList.toggle('is-active', on)
+      if (on) gsap.fromTo(o, { scale: 0.97 }, { scale: 1, duration: 0.6, ease: 'elastic.out(1, 0.5)' })
+    })
+  })
+  const tl = m.intro().pause()
+  ScrollTrigger.create({ trigger: '.mapx', start: 'top 75%', once: true, onEnter: () => tl.play() })
+  offices.forEach(o => o.addEventListener('click', e => {
+    if (e.target.closest('a')) return
+    m.openOffice(o.dataset.office)
+  }))
   gsap.from('.office', { y: 60, autoAlpha: 0, stagger: 0.15, duration: 1, ease: 'power3.out', scrollTrigger: { trigger: '.offices', start: 'top 85%' } })
 }
 

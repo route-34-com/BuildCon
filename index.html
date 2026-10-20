@@ -452,30 +452,59 @@
         <h2 class="split">Two cities. 100 km of trust.</h2>
       </div>
       <div class="locations__body">
-        <svg class="map" viewBox="0 0 600 420" aria-label="Map showing Coimbatore and Erode offices">
-          <defs>
-            <pattern id="dots" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" /></pattern>
-          </defs>
-          <path class="map__land" d="M40 60 C120 20 260 30 340 60 C430 40 540 80 570 160 C590 240 540 320 470 360 C380 410 260 400 180 380 C90 360 30 300 30 220 C25 160 20 100 40 60 Z" />
-          <path class="map__river" d="M120 80 C180 140 250 150 330 170 C380 185 420 230 470 260" />
-          <text x="380" y="215" class="map__rtxt">Bhavani · Kaveri</text>
-          <path class="map__route" d="M170 280 C240 250 320 200 430 150" />
-          <g class="pin" transform="translate(170 280)">
-            <circle r="26" class="pin__pulse" /><circle r="9" class="pin__core" />
-            <text x="-14" y="44">Coimbatore</text>
-          </g>
-          <g class="pin pin--b" transform="translate(430 150)">
-            <circle r="26" class="pin__pulse" /><circle r="9" class="pin__core" />
-            <text x="-12" y="-24">Erode</text>
-          </g>
-          <g class="map__km"><rect x="268" y="196" width="76" height="26" rx="13" /><text x="306" y="214">~100 km</text></g>
-          <g class="map__sites">
-            <circle cx="140" cy="250" r="4" /><circle cx="205" cy="300" r="4" /><circle cx="190" cy="250" r="4" /><circle cx="150" cy="305" r="4" /><circle cx="230" cy="270" r="4" />
-            <circle cx="410" cy="135" r="4" /><circle cx="455" cy="170" r="4" /><circle cx="395" cy="170" r="4" /><circle cx="360" cy="190" r="4" /><circle cx="470" cy="128" r="4" />
-          </g>
-        </svg>
+        <div class="mapx">
+          <div class="mapx__bar">
+            <p class="mapx__hint"><span class="dot"></span> Tap any point to explore a project</p>
+            <div class="mapx__legend" role="group" aria-label="Filter projects by status">
+              <button type="button" class="chip is-active" data-status="all">All <b class="chip__n"></b></button>
+              <button type="button" class="chip" data-status="done"><i class="chip__dot"></i>Completed</button>
+              <button type="button" class="chip" data-status="live"><i class="chip__dot chip__dot--live"></i>Building now</button>
+            </div>
+          </div>
+          <div class="mapx__stage">
+            <svg class="map" viewBox="0 0 600 440" role="img" aria-label="Interactive map of Kongu Buildcon projects across Coimbatore and Erode">
+              <defs>
+                <pattern id="dots" width="12" height="12" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.1" /></pattern>
+                <radialGradient id="glow"><stop offset="0" stop-color="#f5b301" stop-opacity="0.55" /><stop offset="1" stop-color="#f5b301" stop-opacity="0" /></radialGradient>
+              </defs>
+              <path class="map__land" d="M70 205 C82 160 118 136 150 116 C190 92 232 66 282 54 C332 44 372 30 414 22 C456 16 494 34 520 62 C546 92 552 132 548 172 C543 214 530 252 512 286 C492 322 460 350 418 370 C376 390 324 404 272 414 C232 421 196 428 170 418 C146 408 136 384 126 358 C112 324 88 302 74 272 C64 250 64 228 70 205 Z" />
+              <g class="map__ghats">
+                <path d="M47 136 l8 -13 l8 13" /><path d="M60 162 l8 -13 l8 13" /><path d="M70 190 l8 -13 l8 13" /><path d="M76 219 l8 -13 l8 13" /><path d="M80 248 l8 -13 l8 13" /><path d="M86 277 l8 -13 l8 13" /><path d="M94 306 l8 -13 l8 13" /><path d="M105 335 l8 -13 l8 13" /><path d="M118 363 l8 -13 l8 13" /><path d="M133 390 l8 -13 l8 13" />
+                <path d="M96 96 l8 -13 l8 13" /><path d="M116 84 l8 -13 l8 13" /><path d="M110 108 l8 -13 l8 13" />
+              </g>
+              <text class="map__area" x="36" y="300" transform="rotate(-72 36 300)">WESTERN GHATS</text>
+              <text class="map__area" x="92" y="70">NILGIRIS</text>
+              <path class="map__river" d="M150 165 C190 120 230 85 265 76 C310 66 350 75 385 88 C400 93 410 96 418 98" />
+              <path class="map__river" d="M470 18 C455 50 432 78 418 98 C430 118 442 135 447 155 C460 190 478 230 492 266 C502 292 512 320 520 350" />
+              <path class="map__river map__river--thin" d="M100 300 C140 300 170 296 200 292 C240 286 270 262 300 254 C350 244 420 258 492 266" />
+              <text class="map__rtxt" x="290" y="68">Bhavani</text>
+              <text class="map__rtxt" x="500" y="225" transform="rotate(62 500 225)">Kaveri</text>
+              <text class="map__rtxt" x="330" y="268">Noyyal</text>
+              <g class="map__town"><rect x="296" y="236" width="7" height="7" rx="1.5" /><text x="310" y="243">Tiruppur</text></g>
+              <path class="map__route-bg" d="M190 283 C220 255 250 225 275 212 C310 196 350 186 385 177 C400 172 412 164 428 150" />
+              <path class="map__route" d="M190 283 C220 255 250 225 275 212 C310 196 350 186 385 177 C400 172 412 164 428 150" />
+              <path class="map__link" d="M0 0" />
+              <g class="map__km"><rect x="-56" y="-14" width="112" height="28" rx="14" /><text y="5">NH 544 · ~100 km</text></g>
+              <g class="map__truck"><circle r="14" fill="url(#glow)" /><circle r="4.5" class="map__truck-core" /></g>
+              <g class="map__sites"></g>
+              <g class="pin" data-office="coimbatore" transform="translate(190 283)" tabindex="0" role="button" aria-label="Coimbatore head office">
+                <circle r="26" class="pin__pulse" /><circle r="11" class="pin__core" /><path class="pin__icon" d="M-5 3 V-1 L0 -5 L5 -1 V3 Z" />
+                <text x="16" y="36">Coimbatore</text>
+              </g>
+              <g class="pin pin--b" data-office="erode" transform="translate(428 150)" tabindex="0" role="button" aria-label="Erode branch office">
+                <circle r="26" class="pin__pulse" /><circle r="11" class="pin__core" /><path class="pin__icon" d="M-5 3 V-1 L0 -5 L5 -1 V3 Z" />
+                <text x="18" y="-16">Erode</text>
+              </g>
+            </svg>
+            <div class="mapx__tip" aria-hidden="true"></div>
+          </div>
+        </div>
         <div class="offices">
-          <article class="office">
+          <article class="mapx__card" aria-live="polite" hidden>
+            <button type="button" class="mapx__close" aria-label="Close">×</button>
+            <div class="mapx__body"></div>
+          </article>
+          <article class="office" data-office="coimbatore">
             <h3>Coimbatore <small>Head Office</small></h3>
             <p>No. 34, 2nd Floor, Lakshmi Towers,<br />Avinashi Road, Peelamedu,<br />Coimbatore — 641 004</p>
             <dl>
@@ -484,7 +513,7 @@
               <div><dt>Serving</dt><dd>RS Puram, Saravanampatti, Vadavalli, Singanallur, Kovaipudur, Pollachi, Mettupalayam</dd></div>
             </dl>
           </article>
-          <article class="office">
+          <article class="office" data-office="erode">
             <h3>Erode <small>Branch Office</small></h3>
             <p>No. 112, Perundurai Road,<br />Near Kongu Kalyana Mandapam, Thindal,<br />Erode — 638 009</p>
             <dl>
