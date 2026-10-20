@@ -885,7 +885,7 @@ export function initHouse(section) {
     return null
   }
   const mobile = matchMedia('(max-width: 760px)').matches
-  renderer.setPixelRatio(Math.min(devicePixelRatio, mobile ? 1.5 : 1.75))
+  renderer.setPixelRatio(Math.min(devicePixelRatio, mobile ? 1.25 : 1.5))
   renderer.shadowMap.enabled = true
   renderer.shadowMap.type = THREE.PCFSoftShadowMap
   renderer.toneMapping = THREE.ACESFilmicToneMapping
@@ -964,7 +964,12 @@ export function initHouse(section) {
 
   let visible = true
   new IntersectionObserver(([e]) => { visible = e.isIntersecting }).observe(section)
-  gsap.ticker.add(() => { if (visible) render(performance.now()) })
+  gsap.ticker.add(() => {
+    if (!visible || document.hidden) return
+    const r = section.getBoundingClientRect()
+    if (r.bottom <= 0 || r.top >= innerHeight) return
+    render(performance.now())
+  })
 
   function buildTimeline(tl) {
     const panels = [...section.querySelectorAll('.panel')]

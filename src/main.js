@@ -6,6 +6,7 @@ import { initHouse } from './house.js'
 import { initMap } from './map.js'
 
 gsap.registerPlugin(ScrollTrigger)
+
 if ('scrollRestoration' in history) history.scrollRestoration = 'manual'
 scrollTo(0, 0)
 
@@ -20,14 +21,21 @@ gsap.ticker.add(t => lenis.raf(t * 1000))
 gsap.ticker.lagSmoothing(0)
 lenis.stop()
 
-$$('a[href^="#"]').forEach(a => a.addEventListener('click', e => {
+const easeInOutCubic = t => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2)
+
+document.addEventListener('click', e => {
+  const a = e.target.closest('a[href^="#"]')
+  if (!a) return
   const id = a.getAttribute('href')
-  const el = id === '#top' ? 0 : $(id)
+  const el = id === '#top' || id === '#' ? 0 : $(id)
   if (el === null) return
   e.preventDefault()
   closeMenu()
-  lenis.scrollTo(el, { offset: 0, duration: 1.6 })
-}))
+  const target = el === 0 ? 0 : el.getBoundingClientRect().top + scrollY - 70
+  const distance = Math.abs(target - scrollY)
+  const duration = reduced ? 0 : Math.min(3.2, Math.max(1.2, distance / 2600))
+  lenis.scrollTo(target, { duration, easing: easeInOutCubic, force: true })
+})
 
 const houseSection = $('.house')
 const house = initHouse(houseSection)
@@ -124,7 +132,9 @@ function process() {
   gsap.fromTo('.process__line i', { scaleY: 0 }, { scaleY: 1, ease: 'none', scrollTrigger: { trigger: '.process__list', start: 'top 70%', end: 'bottom 60%', scrub: true } })
   $$('.step').forEach(s => {
     ScrollTrigger.create({ trigger: s, start: 'top 65%', onEnter: () => s.classList.add('is-on'), onLeaveBack: () => s.classList.remove('is-on') })
-    gsap.from(s, { x: 50, autoAlpha: 0, duration: 0.9, ease: 'power3.out', scrollTrigger: { trigger: s, start: 'top 85%' } })
+    gsap.timeline({ scrollTrigger: { trigger: s, start: 'top 92%', end: 'top 62%', scrub: 0.6 } })
+      .from(s, { x: 60, autoAlpha: 0, ease: 'power2.out' })
+      .from(s.querySelector('b'), { scale: 0.6, transformOrigin: 'left center', ease: 'back.out(2)' }, 0)
   })
 }
 
@@ -248,7 +258,12 @@ function contact() {
 
 function why() {
   gsap.from('.perk', { y: 60, autoAlpha: 0, duration: 0.9, stagger: 0.07, ease: 'power3.out', scrollTrigger: { trigger: '.why__grid', start: 'top 82%' } })
-  gsap.from('.compare__row', { x: -30, autoAlpha: 0, duration: 0.7, stagger: 0.06, ease: 'power3.out', scrollTrigger: { trigger: '.compare', start: 'top 82%' } })
+  gsap.from('.versus__head > *', { y: 30, autoAlpha: 0, stagger: 0.1, duration: 0.8, ease: 'power3.out', scrollTrigger: { trigger: '.versus', start: 'top 75%' } })
+  const vs = gsap.timeline({ scrollTrigger: { trigger: '.vs', start: 'top 80%' } })
+  vs.from('.vs', { y: 50, autoAlpha: 0, duration: 0.8, ease: 'power3.out' })
+    .from('.vs__row:not(.vs__row--head) .yes', { x: -24, autoAlpha: 0, stagger: 0.07, duration: 0.5 }, 0.3)
+    .from('.vs__row:not(.vs__row--head) .no', { x: 24, autoAlpha: 0, stagger: 0.07, duration: 0.5 }, 0.3)
+    .from('.vs__cta', { y: 20, autoAlpha: 0, duration: 0.6 }, 0.8)
 }
 
 function packages() {
@@ -258,19 +273,22 @@ function packages() {
 function track() {
   const ring = $('.ring__fill'), txt = $('.ring__txt')
   const pct = { v: 0 }
-  const tl = gsap.timeline({ scrollTrigger: { trigger: '.phone', start: 'top 80%' } })
-  tl.from('.phone', { y: 120, rotate: 6, autoAlpha: 0, duration: 1.2, ease: 'expo.out' })
+  const tl = gsap.timeline({ scrollTrigger: { trigger: '.devices', start: 'top 80%' } })
+  tl.from('.laptop', { y: 80, autoAlpha: 0, duration: 1.1, ease: 'expo.out' })
+    .from('.devices .phone', { x: 60, y: 60, rotate: 8, autoAlpha: 0, duration: 1.1, ease: 'expo.out' }, 0.25)
+    .from('.ms em i', { width: 0, stagger: 0.12, duration: 0.8, ease: 'power2.out' }, 0.5)
+    .from('.dash__photos i', { scale: 0.6, autoAlpha: 0, stagger: 0.08, duration: 0.5, ease: 'back.out(2)' }, 0.6)
+    .from('.dash__kpis div', { y: 14, autoAlpha: 0, stagger: 0.08, duration: 0.5 }, 0.9)
     .to(pct, {
       v: 64, duration: 1.6, ease: 'power2.out',
       onUpdate: () => {
         ring.style.strokeDashoffset = 201 - (201 * pct.v) / 100
         txt.textContent = Math.round(pct.v) + '%'
       }
-    }, 0.5)
-    .from('.app__steps li', { x: 20, autoAlpha: 0, stagger: 0.08, duration: 0.5 }, 0.6)
-    .from('.app__pay', { y: 20, autoAlpha: 0, duration: 0.6 }, 1.1)
-  gsap.from('.track__list li', { y: 24, autoAlpha: 0, stagger: 0.07, duration: 0.7, scrollTrigger: { trigger: '.track__list', start: 'top 85%' } })
-  gsap.to('.phone', { y: -40, ease: 'none', scrollTrigger: { trigger: '.track', scrub: true } })
+    }, 0.7)
+    .from('.app__pay', { y: 20, autoAlpha: 0, duration: 0.6 }, 1.2)
+  gsap.from('.track__text > *', { y: 30, autoAlpha: 0, stagger: 0.08, duration: 0.8, ease: 'power3.out', scrollTrigger: { trigger: '.track__text', start: 'top 82%' } })
+  gsap.from('.tile', { y: 30, autoAlpha: 0, stagger: 0.07, duration: 0.6, ease: 'back.out(1.6)', scrollTrigger: { trigger: '.tiles', start: 'top 90%' } })
 }
 
 function faq() {
@@ -298,6 +316,20 @@ function footer() {
 function chrome() {
   const nav = $('.nav')
   lenis.on('scroll', ({ scroll }) => nav.classList.toggle('is-scrolled', scroll > 40))
+
+  const toggle = $('.theme-toggle')
+  const syncToggle = () => toggle.setAttribute('aria-label', document.documentElement.dataset.theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode')
+  syncToggle()
+  toggle.addEventListener('click', () => {
+    const root = document.documentElement
+    const next = root.dataset.theme === 'light' ? 'dark' : 'light'
+    root.classList.add('theme-anim')
+    if (next === 'light') root.dataset.theme = 'light'
+    else delete root.dataset.theme
+    try { localStorage.setItem('kb-theme', next) } catch (e) {}
+    syncToggle()
+    setTimeout(() => root.classList.remove('theme-anim'), 500)
+  })
 
   const burger = $('.burger')
   burger.addEventListener('click', () => (document.body.classList.contains('menu-open') ? closeMenu() : openMenu()))

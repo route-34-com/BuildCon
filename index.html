@@ -6,6 +6,9 @@
   <title>Kongu Buildcon — Builders in Coimbatore & Erode</title>
   <meta name="description" content="Kongu Buildcon designs and builds homes, commercial spaces and industrial facilities across Coimbatore and Erode since 2006." />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <script>
+    try { if (localStorage.getItem('kb-theme') === 'light') document.documentElement.dataset.theme = 'light' } catch (e) {}
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800;900&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -36,6 +39,10 @@
       <a href="#estimate">Estimate</a>
       <a href="#locations">Offices</a>
     </nav>
+    <button class="theme-toggle" type="button" aria-label="Switch to light mode">
+      <svg class="i-moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg>
+      <svg class="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+    </button>
     <a href="#contact" class="btn btn--small magnetic">Get a quote</a>
     <button class="burger" aria-label="Open menu" aria-expanded="false"><span></span><span></span></button>
   </header>
@@ -183,7 +190,7 @@
       </div>
     </section>
 
-    <section class="process">
+    <section class="process" id="process">
       <div class="process__head">
         <h2 class="split">From soil test to housewarming in five steps.</h2>
       </div>
@@ -211,18 +218,27 @@
         <article class="perk"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/></svg><h3>100% Vastu</h3><p>Plans reviewed for Vastu at concept stage — without compromising light or ventilation.</p></article>
         <article class="perk"><svg viewBox="0 0 24 24"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/><path d="M12 8v5M12 16h.01"/></svg><h3>Insured worksite</h3><p>Contractor's all-risk insurance and worker cover on every project, at no extra cost.</p></article>
       </div>
-
-      <div class="compare fade-up">
-        <div class="compare__row compare__row--head"><span></span><span>Kongu Buildcon</span><span>Typical contractor</span></div>
-        <div class="compare__row"><span>Pricing</span><span class="yes">Fixed price, itemised BOQ</span><span class="no">Estimate that keeps growing</span></div>
-        <div class="compare__row"><span>Payments</span><span class="yes">After each inspected milestone</span><span class="no">Large advances up front</span></div>
-        <div class="compare__row"><span>Steel &amp; cement</span><span class="yes">Named brands in contract</span><span class="no">“Equivalent” substitutes</span></div>
-        <div class="compare__row"><span>Quality</span><span class="yes">312 documented checkpoints</span><span class="no">Owner has to supervise</span></div>
-        <div class="compare__row"><span>Progress updates</span><span class="yes">Live app, CCTV, drone video</span><span class="no">Phone calls when you chase</span></div>
-        <div class="compare__row"><span>Delays</span><span class="yes">₹15,000/month rent paid by us</span><span class="no">No commitment</span></div>
-        <div class="compare__row"><span>Warranty</span><span class="yes">10 yrs structure · 2 yrs MEP</span><span class="no">Verbal, if any</span></div>
-      </div>
     </section>
+
+    <section class="versus" id="versus">
+      <div class="versus__head">
+        <span class="pill"><i></i>Kongu Buildcon vs others</span>
+        <h2 class="versus__title">How a ₹40 lakh home quietly becomes <em>₹50 lakh</em>.</h2>
+        <p>Not in one big bill — in small changes nobody wrote down. Here's what changes when everything is in the contract.</p>
+      </div>
+      <div class="vs" role="table" aria-label="Kongu Buildcon compared with a typical contractor">
+        <div class="vs__row vs__row--head" role="row"><span role="columnheader">Kongu Buildcon</span><span role="columnheader">Factor</span><span role="columnheader">Typical contractor</span></div>
+        <div class="vs__row" role="row"><span class="yes" role="cell">Fixed price, itemised BOQ</span><span role="cell">Pricing</span><span class="no" role="cell">Estimate keeps growing</span></div>
+        <div class="vs__row" role="row"><span class="yes" role="cell">14 inspected milestones</span><span role="cell">Payments</span><span class="no" role="cell">Large advances up front</span></div>
+        <div class="vs__row" role="row"><span class="yes" role="cell">Named brands in contract</span><span role="cell">Steel &amp; cement</span><span class="no" role="cell">“Equivalent” substitutes</span></div>
+        <div class="vs__row" role="row"><span class="yes" role="cell">312 documented checks</span><span role="cell">Quality</span><span class="no" role="cell">Owner has to supervise</span></div>
+        <div class="vs__row" role="row"><span class="yes" role="cell">Live app &amp; site CCTV</span><span role="cell">Tracking</span><span class="no" role="cell">Phone calls when you chase</span></div>
+        <div class="vs__row" role="row"><span class="yes" role="cell">₹15,000/month rent paid by us</span><span role="cell">Delays</span><span class="no" role="cell">No commitment</span></div>
+        <div class="vs__row" role="row"><span class="yes" role="cell">10 yrs structure · 2 yrs MEP</span><span role="cell">Warranty</span><span class="no" role="cell">Verbal, if any</span></div>
+      </div>
+      <a href="#contact" class="btn magnetic vs__cta">Get a free consultation <span aria-hidden="true">→</span></a>
+    </section>
+
 
     <section class="projects" id="projects">
       <div class="projects__head">
@@ -242,7 +258,7 @@
           <h3>Aaranya Villas</h3>
           <p>Saravanampatti, Coimbatore · 14 villas · 46,000 sq.ft</p>
         </article>
-        <article class="card card--tall" data-city="coimbatore">
+        <article class="card" data-city="coimbatore">
           <div class="card__img"><img src="https://images.unsplash.com/photo-1565008447742-97f6f38c985c?w=1000&q=70" alt="Glass tower under construction" /></div>
           <div class="card__meta"><span class="tag">Commercial</span><span class="live">Under construction</span></div>
           <h3>Avinashi One</h3>
@@ -260,7 +276,7 @@
           <h3>Bhavani Textiles Logistics Hub</h3>
           <p>SIPCOT Perundurai, Erode · PEB warehouse · 1.6 lakh sq.ft</p>
         </article>
-        <article class="card card--tall" data-city="coimbatore">
+        <article class="card" data-city="coimbatore">
           <div class="card__img"><img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1000&q=70" alt="Modern apartment block" /></div>
           <div class="card__meta"><span class="tag">Residential</span><span>2024</span></div>
           <h3>Kovai Heights</h3>
@@ -382,38 +398,69 @@
     </section>
 
     <section class="track" id="track">
+      <div class="track__bg" aria-hidden="true"></div>
       <div class="track__text">
-        <h2 class="split">Watch your home rise from anywhere.</h2>
-        <p class="fade-up">The Kongu Buildcon app puts your entire build in your pocket — ideal for NRI families and anyone who can't be on site every day.</p>
-        <ul class="track__list">
-          <li><b>24×7 site CCTV</b><span>Live camera feed, recorded for 30 days</span></li>
-          <li><b>Daily photo log</b><span>Geo-tagged photos from your site engineer</span></li>
-          <li><b>Milestone payments</b><span>Pay only when a stage passes inspection</span></li>
-          <li><b>Quality reports</b><span>Cube tests, slump tests and checklists as PDFs</span></li>
-          <li><b>Direct chat</b><span>Talk to your engineer and architect in one thread</span></li>
-        </ul>
+        <span class="pill"><i></i>Live site tracking</span>
+        <h2 class="track__title">Your site, live — clarity at every milestone.</h2>
+        <p class="track__lede">Follow every milestone, quality check and payment in real time from your phone — from excavation to handover, wherever you are.</p>
+        <div class="track__ctas">
+          <a href="#contact" class="btn magnetic">Get a quote</a>
+          <a href="#process" class="btn btn--ghost magnetic">How it works</a>
+        </div>
+        <div class="tiles">
+          <div class="tile"><svg viewBox="0 0 24 24"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg><span>Real-time updates</span></div>
+          <div class="tile"><svg viewBox="0 0 24 24"><rect x="2" y="6" width="14" height="12" rx="2"/><path d="M16 10l6-3v10l-6-3"/></svg><span>24×7 site CCTV</span></div>
+          <div class="tile"><svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 4.5-3.2 7.6-8 9-4.8-1.4-8-4.5-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg><span>Quality reports</span></div>
+          <div class="tile"><svg viewBox="0 0 24 24"><path d="M7 4h11M7 9h11M7 4c5 0 7 2 7 5s-2 5-7 5l8 6"/></svg><span>Cost transparency</span></div>
+        </div>
       </div>
-      <div class="phone" aria-hidden="true">
-        <div class="phone__screen">
-          <div class="app__top"><span>9:41</span><span>●●● 5G</span></div>
-          <p class="app__hello">Vanakkam, Karthik</p>
-          <div class="app__card">
-            <div>
-              <small>Aaranya Villa · Saravanampatti</small>
-              <b>Stage 9 of 14</b>
-              <span class="app__tag">On schedule</span>
+
+      <div class="devices" aria-hidden="true">
+        <div class="laptop">
+          <div class="laptop__screen">
+            <div class="dash">
+              <aside class="dash__nav"><b>KB</b><i class="on"></i><i></i><i></i><i></i><i></i><i></i></aside>
+              <div class="dash__main">
+                <div class="dash__top"><span><b>Aaranya Villa</b> · Saravanampatti</span><span class="dash__live">● Live</span></div>
+                <div class="dash__tabs"><span class="on">Milestones</span><span>Quality</span><span>Payments</span><span>CCTV</span></div>
+                <div class="dash__grid">
+                  <div class="dash__list">
+                    <div class="ms"><span>Foundation &amp; plinth</span><em><i style="--w:100%"></i></em><small class="ok">Done</small></div>
+                    <div class="ms"><span>Ground-floor slab</span><em><i style="--w:100%"></i></em><small class="ok">Done</small></div>
+                    <div class="ms"><span>First-floor slab</span><em><i style="--w:100%"></i></em><small class="ok">Done</small></div>
+                    <div class="ms"><span>Brickwork &amp; lintels</span><em><i style="--w:62%"></i></em><small class="now">62%</small></div>
+                    <div class="ms"><span>Electrical conduits</span><em><i style="--w:25%"></i></em><small class="now">25%</small></div>
+                    <div class="ms"><span>Plastering</span><em><i style="--w:0%"></i></em><small>Next</small></div>
+                  </div>
+                  <div class="dash__aside">
+                    <div class="dash__photos"><i></i><i></i><i></i><i></i></div>
+                    <div class="dash__kpis">
+                      <div><b>9/14</b><span>Milestones</span></div>
+                      <div><b>₹28.4L</b><span>Paid</span></div>
+                      <div><b>0</b><span>Overruns</span></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <svg class="ring" viewBox="0 0 80 80"><circle cx="40" cy="40" r="32"/><circle class="ring__fill" cx="40" cy="40" r="32"/><text x="40" y="46" class="ring__txt">0%</text></svg>
           </div>
-          <div class="app__cam"><span class="app__live">● LIVE</span><small>CAM 02 · Front elevation</small></div>
-          <ul class="app__steps">
-            <li class="done">Foundation &amp; plinth <i>✓</i></li>
-            <li class="done">Ground-floor columns &amp; slab <i>✓</i></li>
-            <li class="done">First-floor slab <i>✓</i></li>
-            <li class="now">Brickwork &amp; lintels <i>62%</i></li>
-            <li>Plastering</li>
-          </ul>
-          <div class="app__pay"><span>Next payment</span><b>₹6.4 L</b><small>after brickwork QA</small></div>
+          <div class="laptop__base"></div>
+        </div>
+        <div class="phone">
+          <div class="phone__screen">
+            <div class="app__top"><span>9:41</span><span>●●● 5G</span></div>
+            <p class="app__hello">Vanakkam, Karthik</p>
+            <div class="app__card">
+              <div>
+                <small>Aaranya Villa · Saravanampatti</small>
+                <b>Stage 9 of 14</b>
+                <span class="app__tag">On schedule</span>
+              </div>
+              <svg class="ring" viewBox="0 0 80 80"><circle cx="40" cy="40" r="32"/><circle class="ring__fill" cx="40" cy="40" r="32"/><text x="40" y="46" class="ring__txt">0%</text></svg>
+            </div>
+            <div class="app__cam"><span class="app__live">● LIVE</span><small>CAM 02 · Front elevation</small></div>
+            <div class="app__pay"><span>Next payment</span><b>₹6.4 L</b><small>after brickwork QA</small></div>
+          </div>
         </div>
       </div>
     </section>
